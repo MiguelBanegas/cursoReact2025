@@ -1,0 +1,11 @@
+.hello {
+  color: red;
+}
+.Boton {
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
