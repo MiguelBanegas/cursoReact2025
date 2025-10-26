@@ -1,5 +1,7 @@
-function MiBoton({texto, color}) {
-    const estilo = {
+
+function MiBoton({texto, color, ...props}) {
+
+  const estilo = {
       backgroundColor: color || 'blue',
       color: 'black',
       padding: '10px 20px',
@@ -9,7 +11,7 @@ function MiBoton({texto, color}) {
     }
   
   return (
-    <button style={estilo} >{texto} </button>
+    <button style={estilo} {...props}>{texto} </button>
   )
 }
 export default MiBoton
