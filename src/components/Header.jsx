@@ -25,9 +25,10 @@ function Header() {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <h1>{isHovered ? 'Hola!!!' : 'Mi Aplicación'}</h1>
+      <h1>{isHovered ? 'HOLA' : 'Mi Aplicación'}</h1>
     </header>
   );
 }
+
 
 export default Header;
