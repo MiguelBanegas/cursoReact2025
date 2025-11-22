@@ -4,7 +4,8 @@ function Footer() {
   return (
     <footer>
         <hr />
-        <p>Desarrolado por: Miguel Angel Banegas</p>
+        <p>Desarrollado por: Miguel Angel Banegas</p>
+        <hr />
     </footer>
   )
 }

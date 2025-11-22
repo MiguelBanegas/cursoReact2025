@@ -2,11 +2,11 @@ import { Link, useParams, useLocation } from "react-router-dom";
 
 const ProductoDetalle = () => {
  
-    const { id } = useParams();
-    const location = useLocation();
-    const producto = location.state?.producto;
+    const { id } = useParams(); // Obtiene el ID del producto desde la URL
+    const location = useLocation(); // Obtiene el estado de la ubicación actual
+    const producto = location.state?.producto; // Obtiene el producto desde el estado
  
-if (!producto) {
+if (!producto) { // Si no se encuentra el producto
     return (
       <div>
         <p>No se pudo cargar el producto</p>
@@ -21,12 +21,12 @@ if (!producto) {
     <>
     <h2>Detalles del Producto {id}</h2>
     <ul>
-        <li key={producto.id}>
+        <li key={producto.id}>  
             {producto.nombre}
             <br />
             <p><strong>Descripción: </strong>{producto.descripcion}</p>
             <p>Precio: ${producto.precio}</p>
-            <img src={producto.avatar} alt={producto.nombre} width="30%" />
+            <img src={producto.avatar} alt={producto.nombre} width="30%" /> 
         </li>
         <hr />
         <Link to={`/productos`}><button>Volver</button></Link>
