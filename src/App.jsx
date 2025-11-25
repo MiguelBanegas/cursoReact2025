@@ -1,26 +1,36 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Inicio from './Pages/Inicio'
 import Servicios from './Pages/Servicios'
 import Navbar from './Pages/Navbar'
 import Productos from './Pages/Productos'
 import ProductoDetalle from './Pages/DetalleProdutos'
+import Login from './Pages/Login'
+import Checkout from './Pages/Checkout'
 import Footer from './Pages/Footer'
 import { Routes, Route } from 'react-router-dom'
+import { AppProvider } from './context/AppContext'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
-  const [carrito, setCarrito] = useState([]);
-
   return (
-    <div>
-      <Navbar />
-      <Routes>
-        <Route path='/' element={<Inicio />} />
-        <Route path='/servicios' element={<Servicios />} />
-        <Route path='/productos' element={<Productos carrito={carrito} setCarrito={setCarrito} />} />
-        <Route path='/productos/:id/:nombre' element={<ProductoDetalle />} />
-      </Routes>
-      <Footer />
-    </div>
+    <AppProvider>
+      <div>
+        <Navbar />
+        <Routes>
+          <Route path='/' element={<Inicio />} />
+          <Route path='/servicios' element={<Servicios />} />
+          <Route path='/productos' element={<Productos />} />
+          <Route path='/productos/:id/:nombre' element={<ProductoDetalle />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/checkout' element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          } />
+        </Routes>
+        <Footer />
+      </div>
+    </AppProvider>
   )
 }
 

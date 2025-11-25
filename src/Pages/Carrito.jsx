@@ -1,38 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
 
-export default function CarritoCompras({ carrito, setCarrito }) {
-  const vaciarCarrito = () => {
-    setCarrito([]);
-  };
-
-  const quitarCantidad = (idProducto) => {
-    const carritoActualizado = carrito.map(producto => {
-      if (producto.id === idProducto) {
-        const cantidadActual = producto.cantidad || 1;
-        if (cantidadActual === 1) {
-          return null;
-        }
-        return { ...producto, cantidad: cantidadActual - 1 };
-      }
-      return producto;
-    }).filter(producto => producto !== null);
-
-    setCarrito(carritoActualizado);
-  };
-
-    const agregarCantidad = (idProducto) => {
-    const nuevoCarrito = carrito.map(producto => {
-      if (producto.id === idProducto) {
-        return {
-          ...producto,
-          cantidad: (producto.cantidad || 1) + 1
-        };
-      }
-      return producto;
-    });
-    setCarrito(nuevoCarrito);
-  };
+export default function CarritoCompras() {
+  const { carrito, vaciarCarrito, quitarCantidad, agregarCantidad } = useAppContext();
 
   const total = carrito.reduce((sum, item) => {
     const cantidad = item.cantidad || 1;
@@ -60,6 +31,11 @@ export default function CarritoCompras({ carrito, setCarrito }) {
             <hr />
             Total: ${total.toLocaleString('es-AR')}
           </div>
+          <Link to="/checkout">
+            <button style={{ marginRight: '10px' }}>
+              Proceder al Pago
+            </button>
+          </Link>
           <button onClick={vaciarCarrito}>
             Vaciar Carrito
           </button>
