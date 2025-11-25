@@ -61,7 +61,8 @@ const agregarAlCarrito = (producto) => {
           Precio: ${producto.precio.toLocaleString('es-AR')}
           <br />
           <img src={producto.avatar} alt={producto.nombre} width="80%" />
-          <Link to={`/productos/${producto.id}`} state={{producto}}><button>Más detalles</button></Link>
+          {/* Navega a la página de detalles y pasa el producto completo via state */}
+          <Link to={`/productos/${producto.id}/${producto.nombre.toLowerCase().replace(/\s+/g, '-')}`} state={{producto}}><button>Más detalles</button></Link> 
           <button onClick={() => agregarAlCarrito(producto)}>Agregar al carrito</button>
         </li>
       ))}
