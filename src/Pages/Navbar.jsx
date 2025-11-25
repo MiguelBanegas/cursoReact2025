@@ -17,7 +17,7 @@ function Navbar() {
             
             {/* Icono del carrito con contador */}
             <li style={{ position: 'relative' }}>
-              <Link to="/productos" style={{ fontSize: '24px', textDecoration: 'none' }}>
+              <Link to="/carrito" style={{ fontSize: '24px', textDecoration: 'none' }}>
                 🛒
                 {totalItems > 0 && (
                   <span style={{
@@ -43,7 +43,19 @@ function Navbar() {
             
             {user.isAuthenticated ? (
               <>
-                <li style={{ marginLeft: 'auto' }}>
+                <li style={{ 
+                  marginLeft: 'auto',
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  color: 'white',
+                  fontWeight: '500',
+                  transition: 'transform 0.2s ease',
+                  cursor: 'default'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                >
                   Hola, {user.nombre}
                 </li>
                 <li>
