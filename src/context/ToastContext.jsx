@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const ToastContext = createContext();
 
@@ -28,6 +28,19 @@ export const ToastProvider = ({ children }) => {
   const removeToast = (id) => {
     setToasts(prev => prev.filter(toast => toast.id !== id));
   };
+
+  // Escuchar eventos personalizados para mostrar toasts
+  useEffect(() => {
+    const handleShowToast = (event) => {
+      showToast(event.detail.message, event.detail.type);
+    };
+    
+    window.addEventListener('showToast', handleShowToast);
+    
+    return () => {
+      window.removeEventListener('showToast', handleShowToast);
+    };
+  }, []);
 
   return (
     <ToastContext.Provider value={{ showToast }}>

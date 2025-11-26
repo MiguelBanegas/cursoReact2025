@@ -16,7 +16,11 @@ export const useCart = () => {
 export const CartProvider = ({ children, userEmail }) => {
   // Inicializar carrito desde localStorage si existe (asociado al usuario)
   const [carrito, setCarrito] = useState(() => {
-    if (!userEmail) return []; // Si no hay usuario, carrito vacío
+    if (!userEmail) {
+      // Si no hay usuario, cargar carrito anónimo
+      const carritoAnonimo = localStorage.getItem('carrito_anonimo');
+      return carritoAnonimo ? JSON.parse(carritoAnonimo) : [];
+    }
     
     const carritoKey = `carrito_${userEmail}`;
     const carritoGuardado = localStorage.getItem(carritoKey);
@@ -25,30 +29,79 @@ export const CartProvider = ({ children, userEmail }) => {
 
   // Ref para evitar guardar en el primer render
   const isFirstRender = useRef(true);
+  const previousEmail = useRef(userEmail);
 
-  // Cargar carrito cuando cambia el usuario
+  // Cargar y fusionar carrito cuando cambia el usuario
   useEffect(() => {
-    if (userEmail) {
+    if (userEmail && userEmail !== previousEmail.current) {
+      // Usuario acaba de loguearse
+      const carritoAnonimo = localStorage.getItem('carrito_anonimo');
       const carritoKey = `carrito_${userEmail}`;
-      const carritoGuardado = localStorage.getItem(carritoKey);
-      setCarrito(carritoGuardado ? JSON.parse(carritoGuardado) : []);
-    } else {
-      // Si no hay usuario logueado, vaciar el carrito
+      const carritoUsuario = localStorage.getItem(carritoKey);
+      
+      let carritoAnonimoArray = carritoAnonimo ? JSON.parse(carritoAnonimo) : [];
+      let carritoUsuarioArray = carritoUsuario ? JSON.parse(carritoUsuario) : [];
+      
+      // Fusionar carritos
+      if (carritoAnonimoArray.length > 0) {
+        const carritoFusionado = [...carritoUsuarioArray];
+        let productosAgregados = 0;
+        
+        carritoAnonimoArray.forEach(itemAnonimo => {
+          const existente = carritoFusionado.find(item => item.id === itemAnonimo.id);
+          
+          if (existente) {
+            // Si existe, sumar cantidades
+            existente.cantidad = (existente.cantidad || 1) + (itemAnonimo.cantidad || 1);
+          } else {
+            // Si no existe, agregarlo
+            carritoFusionado.push(itemAnonimo);
+            productosAgregados++;
+          }
+        });
+        
+        setCarrito(carritoFusionado);
+        
+        // Limpiar carrito anónimo
+        localStorage.removeItem('carrito_anonimo');
+        
+        // Mostrar notificación si hay productos del carrito anónimo
+        if (carritoAnonimoArray.length > 0) {
+          // Usar setTimeout para asegurar que el toast context esté disponible
+          setTimeout(() => {
+            const event = new CustomEvent('showToast', {
+              detail: {
+                message: `Se agregaron ${carritoAnonimoArray.length} producto(s) de tu sesión anterior`,
+                type: 'info'
+              }
+            });
+            window.dispatchEvent(event);
+          }, 500);
+        }
+      } else {
+        // No hay carrito anónimo, solo cargar el del usuario
+        setCarrito(carritoUsuarioArray);
+      }
+    } else if (!userEmail && previousEmail.current) {
+      // Usuario hizo logout, vaciar carrito
       setCarrito([]);
     }
-    // Marcar que ya pasó el primer render
+    
+    previousEmail.current = userEmail;
     isFirstRender.current = false;
   }, [userEmail]);
 
-  // Guardar carrito en localStorage cada vez que cambie (asociado al usuario)
-  // PERO solo después del primer render para evitar sobrescribir al cargar
+  // Guardar carrito en localStorage cada vez que cambie
   useEffect(() => {
-    // No guardar en el primer render ni cuando se está cargando el usuario
     if (isFirstRender.current) return;
     
-    if (userEmail && carrito) {
+    if (userEmail) {
+      // Usuario logueado: guardar en su carrito personal
       const carritoKey = `carrito_${userEmail}`;
       localStorage.setItem(carritoKey, JSON.stringify(carrito));
+    } else {
+      // Usuario anónimo: guardar en carrito anónimo
+      localStorage.setItem('carrito_anonimo', JSON.stringify(carrito));
     }
   }, [carrito, userEmail]);
 
