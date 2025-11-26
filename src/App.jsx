@@ -15,6 +15,7 @@ import { CartProvider } from './context/CartContext'
 import { ToastProvider } from './context/ToastContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
+import ScrollToTop from './components/ScrollToTop'
 
 // Componente interno que tiene acceso al contexto de Auth
 function AppContent() {
@@ -22,6 +23,7 @@ function AppContent() {
   
   return (
     <CartProvider userEmail={user?.email}>
+      <ScrollToTop />
       <div>
         <Navbar />
         <Routes>
