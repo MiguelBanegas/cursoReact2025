@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 
 export default function Checkout() {
   const { user } = useAuth();
   const { carrito, finalizarCompra } = useCart();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const total = carrito.reduce((sum, item) => {
@@ -16,7 +18,7 @@ export default function Checkout() {
     const resultado = finalizarCompra(user.email);
     
     if (resultado.success) {
-      alert(resultado.message);
+      showToast(resultado.message, 'success');
       navigate('/productos');
     }
   };

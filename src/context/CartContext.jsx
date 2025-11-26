@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 // Crear el contexto del carrito
 const CartContext = createContext();
@@ -13,8 +13,44 @@ export const useCart = () => {
 };
 
 // Provider del carrito
-export const CartProvider = ({ children }) => {
-  const [carrito, setCarrito] = useState([]);
+export const CartProvider = ({ children, userEmail }) => {
+  // Inicializar carrito desde localStorage si existe (asociado al usuario)
+  const [carrito, setCarrito] = useState(() => {
+    if (!userEmail) return []; // Si no hay usuario, carrito vacío
+    
+    const carritoKey = `carrito_${userEmail}`;
+    const carritoGuardado = localStorage.getItem(carritoKey);
+    return carritoGuardado ? JSON.parse(carritoGuardado) : [];
+  });
+
+  // Ref para evitar guardar en el primer render
+  const isFirstRender = useRef(true);
+
+  // Cargar carrito cuando cambia el usuario
+  useEffect(() => {
+    if (userEmail) {
+      const carritoKey = `carrito_${userEmail}`;
+      const carritoGuardado = localStorage.getItem(carritoKey);
+      setCarrito(carritoGuardado ? JSON.parse(carritoGuardado) : []);
+    } else {
+      // Si no hay usuario logueado, vaciar el carrito
+      setCarrito([]);
+    }
+    // Marcar que ya pasó el primer render
+    isFirstRender.current = false;
+  }, [userEmail]);
+
+  // Guardar carrito en localStorage cada vez que cambie (asociado al usuario)
+  // PERO solo después del primer render para evitar sobrescribir al cargar
+  useEffect(() => {
+    // No guardar en el primer render ni cuando se está cargando el usuario
+    if (isFirstRender.current) return;
+    
+    if (userEmail && carrito) {
+      const carritoKey = `carrito_${userEmail}`;
+      localStorage.setItem(carritoKey, JSON.stringify(carrito));
+    }
+  }, [carrito, userEmail]);
 
   // Función para agregar producto al carrito
   const agregarAlCarrito = (producto) => {
@@ -63,7 +99,8 @@ export const CartProvider = ({ children }) => {
     setCarrito(nuevoCarrito);
   };
 
-  // Función para vaciar el carrito
+  // Función para vaciar el carrito (solo del estado, NO de localStorage)
+  // El carrito se mantiene en localStorage para cuando el usuario vuelva
   const vaciarCarrito = () => {
     setCarrito([]);
   };
@@ -74,8 +111,14 @@ export const CartProvider = ({ children }) => {
     console.log(`📧 Enviando compra a: ${userEmail}`);
     console.log('Productos:', carrito);
     
-    // Limpiar el carrito
-    vaciarCarrito();
+    // Limpiar el carrito del estado
+    setCarrito([]);
+    
+    // TAMBIÉN limpiar de localStorage (compra finalizada)
+    if (userEmail) {
+      const carritoKey = `carrito_${userEmail}`;
+      localStorage.removeItem(carritoKey);
+    }
     
     return {
       success: true,

@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useToast } from "../context/ToastContext";
 
 export default function Productos() {
   const { agregarAlCarrito } = useCart();
+  const { showToast } = useToast();
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
@@ -29,8 +31,8 @@ export default function Productos() {
   }, []);
 
   const agregarAlCarritoHandler = (producto) => {
-    agregarAlCarrito(producto); // Usar la función del contexto
-    alert(`Producto ${producto.nombre} agregado.`);
+    agregarAlCarrito(producto);
+    showToast(`${producto.nombre} agregado al carrito`, 'success');
   };
 
   if (cargando) return <p>Cargando productos...</p>;

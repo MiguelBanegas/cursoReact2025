@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 export default function Login() {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const { login } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -13,12 +15,13 @@ export default function Login() {
     
     // Validación básica
     if (!nombre.trim() || !email.trim()) {
-      alert('Por favor completa todos los campos');
+      showToast('Por favor completa todos los campos', 'error');
       return;
     }
 
     // Iniciar sesión usando el contexto
     login(nombre, email);
+    showToast(`¡Bienvenido ${nombre}!`, 'success');
     
     // Redirigir al checkout después de iniciar sesión
     navigate('/checkout');

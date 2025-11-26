@@ -9,33 +9,45 @@ import Checkout from './Pages/Checkout'
 import CarritoPage from './Pages/CarritoPage'
 import Footer from './Pages/Footer'
 import { Routes, Route } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
+import { ToastProvider } from './context/ToastContext'
 import ProtectedRoute from './components/ProtectedRoute'
+
+// Componente interno que tiene acceso al contexto de Auth
+function AppContent() {
+  const { user } = useAuth();
+  
+  return (
+    <CartProvider userEmail={user?.email}>
+      <div>
+        <Navbar />
+        <Routes>
+          <Route path='/' element={<Inicio />} />
+          <Route path='/servicios' element={<Servicios />} />
+          <Route path='/productos' element={<Productos />} />
+          <Route path='/productos/:id/:nombre' element={<ProductoDetalle />} />
+          <Route path='/carrito' element={<CarritoPage />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/checkout' element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          } />
+        </Routes>
+        <Footer />
+      </div>
+    </CartProvider>
+  );
+}
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <div>
-          <Navbar />
-          <Routes>
-            <Route path='/' element={<Inicio />} />
-            <Route path='/servicios' element={<Servicios />} />
-            <Route path='/productos' element={<Productos />} />
-            <Route path='/productos/:id/:nombre' element={<ProductoDetalle />} />
-            <Route path='/carrito' element={<CarritoPage />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/checkout' element={
-              <ProtectedRoute>
-                <Checkout />
-              </ProtectedRoute>
-            } />
-          </Routes>
-          <Footer />
-        </div>
-      </CartProvider>
-    </AuthProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ToastProvider>
   )
 }
 
