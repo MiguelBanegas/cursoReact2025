@@ -12,6 +12,10 @@ export const useAuth = () => {
   return context;
 };
 
+// Credenciales de admin
+const ADMIN_EMAIL = 'admin';
+const ADMIN_PASSWORD = '1234@admin.com';
+
 // Provider de autenticación
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -21,30 +25,37 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     const userName = localStorage.getItem('userName');
     const userEmail = localStorage.getItem('userEmail');
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
     
     if (token && userName && userEmail) {
       setUser({
         nombre: userName,
         email: userEmail,
-        isAuthenticated: true
+        isAuthenticated: true,
+        isAdmin: isAdmin
       });
     }
   }, []);
 
   // Función para iniciar sesión
   const login = (nombre, email) => {
+    // Verificar si es admin
+    const isAdmin = nombre === ADMIN_EMAIL && email === ADMIN_PASSWORD;
+    
     const token = "token" + nombre;
     
     // Guardar en localStorage
     localStorage.setItem('token', token);
     localStorage.setItem('userName', nombre);
     localStorage.setItem('userEmail', email);
+    localStorage.setItem('isAdmin', isAdmin.toString());
     
     // Actualizar estado
     setUser({
       nombre,
       email,
-      isAuthenticated: true
+      isAuthenticated: true,
+      isAdmin: isAdmin
     });
   };
 
@@ -54,6 +65,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('userName');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('isAdmin');
     
     // Resetear estado a null
     setUser(null);

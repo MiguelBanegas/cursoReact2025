@@ -7,12 +7,14 @@ import ProductoDetalle from './Pages/DetalleProdutos'
 import Login from './Pages/Login'
 import Checkout from './Pages/Checkout'
 import CarritoPage from './Pages/CarritoPage'
+import AdminPanel from './Pages/AdminPanel'
 import Footer from './Pages/Footer'
 import { Routes, Route } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { ToastProvider } from './context/ToastContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminRoute from './components/AdminRoute'
 
 // Componente interno que tiene acceso al contexto de Auth
 function AppContent() {
@@ -33,6 +35,11 @@ function AppContent() {
             <ProtectedRoute>
               <Checkout />
             </ProtectedRoute>
+          } />
+          <Route path='/admin' element={
+            <AdminRoute>
+              <AdminPanel />
+            </AdminRoute>
           } />
         </Routes>
         <Footer />

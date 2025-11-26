@@ -17,37 +17,53 @@ function Navbar() {
             <li><Link to="/servicios">Servicios</Link></li>
             <li><Link to="/productos">Productos</Link></li>
             
-            {/* Icono del carrito con contador */}
-            <li style={{ position: 'relative' }}>
-              <Link to="/carrito" style={{ fontSize: '24px', textDecoration: 'none' }}>
-                🛒
-                {totalItems > 0 && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '-8px',
-                    right: '-10px',
-                    backgroundColor: '#ff4444',
-                    color: 'white',
-                    borderRadius: '50%',
-                    width: '20px',
-                    height: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    fontWeight: 'bold'
-                  }}>
-                    {totalItems}
-                  </span>
-                )}
-              </Link>
-            </li>
+            {/* Link Admin - solo visible para admin */}
+            {user?.isAdmin && (
+              <li>
+                <Link to="/admin" style={{ 
+                  color: '#ff4444', 
+                  fontWeight: 'bold' 
+                }}>
+                  🔧 Admin
+                </Link>
+              </li>
+            )}
+            
+            {/* Icono del carrito con contador - NO visible para admin */}
+            {!user?.isAdmin && (
+              <li style={{ position: 'relative' }}>
+                <Link to="/carrito" style={{ fontSize: '24px', textDecoration: 'none' }}>
+                  🛒
+                  {totalItems > 0 && (
+                    <span style={{
+                      position: 'absolute',
+                      top: '-8px',
+                      right: '-10px',
+                      backgroundColor: '#ff4444',
+                      color: 'white',
+                      borderRadius: '50%',
+                      width: '20px',
+                      height: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '12px',
+                      fontWeight: 'bold'
+                    }}>
+                      {totalItems}
+                    </span>
+                  )}
+                </Link>
+              </li>
+            )}
             
             {user?.isAuthenticated ? (
               <>
                 <li style={{ 
                   marginLeft: 'auto',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  background: user?.isAdmin 
+                    ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+                    : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   padding: '8px 16px',
                   borderRadius: '20px',
                   color: 'white',
@@ -58,7 +74,7 @@ function Navbar() {
                 onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                 onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 >
-                  Hola, {user.nombre}
+                  {user?.isAdmin ? '👑 Admin' : `Hola, ${user.nombre}`}
                 </li>
                 <li>
                   <button onClick={logout}>Cerrar Sesión</button>
