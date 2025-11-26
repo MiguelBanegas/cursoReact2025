@@ -59,8 +59,8 @@ function Navbar() {
         {/* Enlaces de Navegación */}
         <ul style={{ display: 'flex', listStyle: 'none', gap: '30px', margin: 0, padding: 0, alignItems: 'center' }}>
           <li><Link to="/" style={linkStyle('/')}>Inicio</Link></li>
+          <li><Link to="/productos" style={linkStyle('/productos')}>Catálogo</Link></li>
           <li><Link to="/servicios" style={linkStyle('/servicios')}>Servicios</Link></li>
-          <li><Link to="/productos" style={linkStyle('/productos')}>Productos</Link></li>
           
           {/* Link Admin - solo visible para admin */}
           {user?.isAdmin && (

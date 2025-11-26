@@ -2,25 +2,261 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 function Servicios() {
-  return (
-    <div>
-        <h1>Servicios</h1>
-        <hr />
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio velit corrupti in aspernatur officia debitis praesentium ab veritatis vel, eligendi reiciendis? Suscipit, libero aliquam est nisi itaque saepe temporibus doloribus?
-      
-        Odio debitis nam placeat assumenda distinctio quam ratione. Totam illo, voluptatum eaque consectetur neque animi commodi saepe nihil odio qui? Soluta exercitationem, quibusdam nostrum tempora natus eos expedita excepturi molestias.
-        Mollitia quam quod fuga eum rem, cupiditate culpa eos, natus officia sunt sapiente quas a quisquam rerum eveniet cumque! Consequatur quas fuga consequuntur est quis debitis aliquid illo odit eligendi!
-        Dolorum nihil, autem ratione molestias tempora quidem quibusdam, repellendus, quia ducimus magni rerum molestiae modi similique. Unde, esse velit tempora perspiciatis atque harum doloribus, est illo minus aspernatur natus ipsum.
-        Non perferendis dolorem doloribus suscipit fugit amet magni et, ex iste a, quia placeat facilis provident. Deleniti adipisci enim aliquam. Iusto iure consequuntur sequi maxime ipsa eaque natus enim. Ea?
-        Facilis eaque voluptates esse deleniti et consequuntur sed hic cumque. Sapiente quis pariatur, facilis fugit accusantium distinctio? Dolorum tempore distinctio rem, molestiae ut quas libero iste! Reprehenderit inventore illum accusantium.
-        Ratione temporibus dolorum consequatur, voluptatem consectetur, cum ipsa pariatur inventore sint cumque quisquam reprehenderit aliquam sit quasi nostrum natus accusamus fuga quae ea! Illo harum culpa fugiat reprehenderit molestiae maiores.
-        Officia sed laborum maiores doloremque officiis, aperiam tempora ratione perferendis minus at quod dolor, laudantium non. Eius harum illo delectus iste hic, animi eveniet praesentium molestias libero enim velit? Nihil.
-        Doloremque quisquam, eos possimus omnis vero, blanditiis vitae deleniti assumenda perspiciatis, repudiandae est hic! Ad deserunt culpa esse, commodi nesciunt dolor rem aspernatur minus molestiae tempora quaerat, alias eos. Aperiam?
-        Officia, ratione deleniti ipsum libero dignissimos porro consequuntur veniam. Et delectus quos corrupti beatae nobis tempora esse minus omnis vero quia at, ipsum dolore aspernatur fugiat magni voluptate non magnam!
-        Necessitatibus distinctio voluptates ad, aperiam placeat eveniet ab accusantium autem officia odio architecto quasi quam neque voluptatem magni odit sed praesentium ipsum quisquam quos minus asperiores suscipit impedit! Hic, ad.
-        At, cumque vero minus quae deleniti pariatur dolores nulla. Veniam, corrupti perspiciatis! At suscipit minima inventore sint impedit laborum tenetur enim incidunt iure itaque, voluptas corporis cumque ea, nobis accusantium?</p>
-        <Link to="/"><button>Volver al Inicio</button></Link>
+  const services = [
+    {
+      icon: '🛡️',
+      title: 'Garantías',
+      description: 'Cobertura completa en todos nuestros productos y servicios. Garantía extendida disponible.',
+      features: ['Garantía de fábrica', 'Cobertura de repuestos', 'Garantía extendida opcional', 'Sin letra chica'],
+      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    },
+    {
+      icon: '🔧',
+      title: 'Taller Especializado',
+      description: 'Técnicos certificados con experiencia en todas las marcas de motocicletas.',
+      features: ['Diagnóstico computarizado', 'Repuestos originales', 'Mano de obra certificada', 'Equipamiento profesional'],
+      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    },
+    {
+      icon: '⚙️',
+      title: 'Mantenimiento',
+      description: 'Servicios preventivos y correctivos para mantener tu moto en óptimas condiciones.',
+      features: ['Mantenimiento preventivo', 'Cambio de aceite', 'Ajuste de frenos', 'Revisión completa'],
+      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+    },
+    {
+      icon: '📞',
+      title: 'Soporte Técnico',
+      description: 'Atención personalizada 24/7 para resolver todas tus consultas y emergencias.',
+      features: ['Atención 24/7', 'Asesoramiento técnico', 'Asistencia en ruta', 'Consultas online'],
+      gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
+    }
+  ];
 
+  return (
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%)'
+    }}>
+      {/* Hero Section */}
+      <div style={{
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        padding: '80px 20px',
+        textAlign: 'center',
+        color: 'white',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%)',
+          pointerEvents: 'none'
+        }}></div>
+        
+        <h1 style={{
+          fontSize: '48px',
+          fontWeight: '800',
+          margin: '0 0 20px 0',
+          position: 'relative',
+          textShadow: '2px 2px 4px rgba(0,0,0,0.2)'
+        }}>
+          Servicios Post-Venta
+        </h1>
+        <p style={{
+          fontSize: '20px',
+          maxWidth: '700px',
+          margin: '0 auto',
+          opacity: 0.95,
+          position: 'relative',
+          lineHeight: '1.6'
+        }}>
+          Tu satisfacción es nuestra prioridad. Ofrecemos servicios integrales para que tu experiencia con nosotros sea excepcional.
+        </p>
+      </div>
+
+      {/* Services Grid */}
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '60px 20px'
+      }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '30px',
+          marginBottom: '50px'
+        }}>
+          {services.map((service, index) => (
+            <div
+              key={index}
+              style={{
+                background: 'white',
+                borderRadius: '20px',
+                padding: '30px',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-10px)';
+                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+              }}
+            >
+              {/* Gradient Header */}
+              <div style={{
+                background: service.gradient,
+                borderRadius: '15px',
+                padding: '20px',
+                marginBottom: '20px',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '50px', marginBottom: '10px' }}>
+                  {service.icon}
+                </div>
+                <h3 style={{
+                  color: 'white',
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  margin: 0
+                }}>
+                  {service.title}
+                </h3>
+              </div>
+
+              {/* Description */}
+              <p style={{
+                color: '#666',
+                fontSize: '15px',
+                lineHeight: '1.6',
+                marginBottom: '20px'
+              }}>
+                {service.description}
+              </p>
+
+              {/* Features List */}
+              <ul style={{
+                listStyle: 'none',
+                padding: 0,
+                margin: 0
+              }}>
+                {service.features.map((feature, idx) => (
+                  <li key={idx} style={{
+                    padding: '8px 0',
+                    color: '#333',
+                    fontSize: '14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}>
+                    <span style={{
+                      color: '#4CAF50',
+                      fontSize: '18px',
+                      fontWeight: 'bold'
+                    }}>✓</span>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA Section */}
+        <div style={{
+          background: 'white',
+          borderRadius: '20px',
+          padding: '50px 30px',
+          textAlign: 'center',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+          background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+        }}>
+          <h2 style={{
+            fontSize: '32px',
+            fontWeight: '700',
+            color: '#333',
+            marginBottom: '20px'
+          }}>
+            ¿Necesitas ayuda?
+          </h2>
+          <p style={{
+            fontSize: '18px',
+            color: '#666',
+            marginBottom: '30px',
+            maxWidth: '600px',
+            margin: '0 auto 30px auto'
+          }}>
+            Nuestro equipo está listo para atenderte. Contáctanos para agendar tu servicio o resolver cualquier consulta.
+          </p>
+          
+          <div style={{
+            display: 'flex',
+            gap: '20px',
+            justifyContent: 'center',
+            flexWrap: 'wrap'
+          }}>
+            <button style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              border: 'none',
+              padding: '15px 40px',
+              borderRadius: '30px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 5px 15px rgba(102, 126, 234, 0.4)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 8px 20px rgba(102, 126, 234, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 5px 15px rgba(102, 126, 234, 0.4)';
+            }}
+            >
+              📞 Contactar Ahora
+            </button>
+            
+            <Link to="/" style={{ textDecoration: 'none' }}>
+              <button style={{
+                background: 'white',
+                color: '#667eea',
+                border: '2px solid #667eea',
+                padding: '15px 40px',
+                borderRadius: '30px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#667eea';
+                e.currentTarget.style.color = 'white';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'white';
+                e.currentTarget.style.color = '#667eea';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+              >
+                🏠 Volver al Inicio
+              </button>
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

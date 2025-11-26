@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from '../context/ToastContext';
 import ConfirmModal from '../components/ConfirmModal';
+import ProductCreatedModal from '../components/ProductCreatedModal';
 
 export default function AdminPanel() {
   const [productos, setProductos] = useState([]);
@@ -11,6 +12,7 @@ export default function AdminPanel() {
   const [imagePreview, setImagePreview] = useState('');
   const [errors, setErrors] = useState({});
   const [modalConfig, setModalConfig] = useState({ isOpen: false, onConfirm: null, productName: '' });
+  const [productCreatedModal, setProductCreatedModal] = useState({ isOpen: false, productName: '' });
   const { showToast } = useToast();
   const nombreInputRef = useRef(null);
 
@@ -202,9 +204,12 @@ export default function AdminPanel() {
       });
       
       if (await handleApiError(response, 'Error al crear producto')) {
+        const productName = formData.nombre.trim();
         showToast('Producto creado exitosamente', 'success');
         cargarProductos();
         resetForm();
+        // Mostrar modal de éxito
+        setProductCreatedModal({ isOpen: true, productName });
       }
     } catch (error) {
       showToast('Error de conexión. Verifica tu internet', 'error');
@@ -633,7 +638,7 @@ export default function AdminPanel() {
         ))}
       </div>
 
-      {/* Modal de confirmación */}
+      {/* Modal de confirmación de eliminación */}
       <ConfirmModal
         isOpen={modalConfig.isOpen}
         onClose={closeModal}
@@ -642,6 +647,14 @@ export default function AdminPanel() {
         message={`¿Estás seguro de que deseas eliminar "${modalConfig.productName}"? Esta acción no se puede deshacer.`}
         confirmText="Eliminar"
         cancelText="Cancelar"
+      />
+
+      {/* Modal de producto creado */}
+      <ProductCreatedModal
+        isOpen={productCreatedModal.isOpen}
+        onClose={() => setProductCreatedModal({ isOpen: false, productName: '' })}
+        onContinue={() => setMostrarForm(true)}
+        productName={productCreatedModal.productName}
       />
     </div>
   );
