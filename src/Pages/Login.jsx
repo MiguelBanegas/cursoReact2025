@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
-  const { login } = useAppContext();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {

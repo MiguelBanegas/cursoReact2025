@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAppContext } from "../context/AppContext";
+import { useCart } from "../context/CartContext";
 
 export default function Productos() {
-  const { carrito, agregarAlCarrito } = useAppContext(); // Obtener del contexto
+  const { agregarAlCarrito } = useCart();
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);

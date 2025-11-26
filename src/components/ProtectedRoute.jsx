@@ -1,11 +1,11 @@
 import { Navigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function ProtectedRoute({ children }) {
-  const { user } = useAppContext();
+  const { user } = useAuth();
 
   // Si el usuario NO está autenticado, redirigir a login
-  if (!user.isAuthenticated) {
+  if (!user?.isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import { useCart } from '../context/CartContext';
 
 export default function CarritoPage() {
-  const { carrito, vaciarCarrito, quitarCantidad, agregarCantidad } = useAppContext();
+  const { carrito, vaciarCarrito, quitarCantidad, agregarCantidad } = useCart();
 
   const total = carrito.reduce((sum, item) => {
     const cantidad = item.cantidad || 1;

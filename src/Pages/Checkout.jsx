@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 export default function Checkout() {
-  const { user, carrito, finalizarCompra } = useAppContext();
+  const { user } = useAuth();
+  const { carrito, finalizarCompra } = useCart();
   const navigate = useNavigate();
 
   const total = carrito.reduce((sum, item) => {
@@ -11,7 +13,7 @@ export default function Checkout() {
   }, 0);
 
   const handleFinalizarCompra = () => {
-    const resultado = finalizarCompra();
+    const resultado = finalizarCompra(user.email);
     
     if (resultado.success) {
       alert(resultado.message);

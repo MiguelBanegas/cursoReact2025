@@ -1,9 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useAppContext } from '../context/AppContext'
+import { useAuth } from '../context/AuthContext'
+import { useCart } from '../context/CartContext'
 
 function Navbar() {
-  const { user, logout, carrito } = useAppContext();
+  const { user, logout } = useAuth();
+  const { carrito } = useCart();
 
   // Calcular el número total de items en el carrito
   const totalItems = carrito.reduce((total, item) => total + (item.cantidad || 1), 0);
@@ -41,7 +43,7 @@ function Navbar() {
               </Link>
             </li>
             
-            {user.isAuthenticated ? (
+            {user?.isAuthenticated ? (
               <>
                 <li style={{ 
                   marginLeft: 'auto',
