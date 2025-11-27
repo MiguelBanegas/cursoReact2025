@@ -17,6 +17,9 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
 import ScrollToTop from './components/ScrollToTop'
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+
 // Componente interno que tiene acceso al contexto de Auth
 function AppContent() {
   const { user } = useAuth();

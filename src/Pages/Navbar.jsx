@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { TiShoppingCart } from "react-icons/ti"
+import { PiMotorcycleFill } from "react-icons/pi"
 
 function Navbar() {
   const { user, logout } = useAuth();
   const { carrito } = useCart();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   // Detectar scroll para cambiar estilo
   useEffect(() => {
@@ -23,166 +26,298 @@ function Navbar() {
 
   const isActive = (path) => location.pathname === path;
 
-  const linkStyle = (path) => ({
-    textDecoration: 'none',
-    color: isActive(path) ? '#4CAF50' : '#333',
-    fontWeight: isActive(path) ? '700' : '500',
-    fontSize: '16px',
-    transition: 'color 0.2s',
-    position: 'relative',
-    padding: '5px 0'
-  });
+  // Cerrar el menú al hacer clic en un enlace
+  const handleLinkClick = () => {
+    setIsOpen(false);
+  };
 
   return (
-    <nav style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 1000,
-      backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.95)' : 'white',
-      backdropFilter: 'blur(10px)',
-      boxShadow: scrolled ? '0 2px 10px rgba(0,0,0,0.1)' : 'none',
-      transition: 'all 0.3s ease',
-      padding: '15px 0'
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '0 20px'
-      }}>
-        <Link to="/" style={{ textDecoration: 'none', color: '#333', fontSize: '24px', fontWeight: 'bold' }}>
-          <span>🏍️ MAB Motors</span>
-        </Link>
+    <>
+      <nav 
+        className={`navbar navbar-expand-lg fixed-top ${scrolled ? 'navbar-scrolled' : ''}`}
+        style={{
+          backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.95)' : 'white',
+          backdropFilter: 'blur(10px)',
+          boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.1)' : '0 2px 10px rgba(0,0,0,0.05)',
+          transition: 'all 0.3s ease',
+          padding: '12px 0'
+        }}
+      >
+        <div className="container-fluid" style={{ maxWidth: '1400px' }}>
+          {/* Logo/Brand */}
+          <Link 
+            className="navbar-brand d-flex align-items-center" 
+            to="/" 
+            style={{ 
+              fontSize: '26px', 
+              fontWeight: '800',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              textDecoration: 'none',
+              transition: 'transform 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            <PiMotorcycleFill style={{ marginRight: '8px', fontSize: '32px', color: '#667eea' }} />
+            MAB Motors
+          </Link>
 
-        {/* Enlaces de Navegación */}
-        <ul style={{ display: 'flex', listStyle: 'none', gap: '30px', margin: 0, padding: 0, alignItems: 'center' }}>
-          <li><Link to="/" style={linkStyle('/')}>Inicio</Link></li>
-          <li><Link to="/productos" style={linkStyle('/productos')}>Catálogo</Link></li>
-          <li><Link to="/servicios" style={linkStyle('/servicios')}>Servicios</Link></li>
-          
-          {/* Link Admin - solo visible para admin */}
-          {user?.isAdmin && (
-            <li>
-              <Link to="/admin" style={{ 
-                ...linkStyle('/admin'),
-                color: '#f44336', 
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px'
-              }}>
-                <span>🔧</span> Admin
-              </Link>
-            </li>
-          )}
-        </ul>
+          {/* Hamburger Button */}
+          <button 
+            className="navbar-toggler border-0 shadow-none" 
+            type="button" 
+            onClick={() => setIsOpen(!isOpen)}
+            aria-controls="navbarNav"
+            aria-expanded={isOpen}
+            aria-label="Toggle navigation"
+            style={{
+              padding: '8px 12px',
+              borderRadius: '8px',
+              transition: 'all 0.3s'
+            }}
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
 
-        {/* Sección Derecha: Carrito y Usuario */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          
-          {/* Icono del carrito - NO visible para admin */}
-          {!user?.isAdmin && (
-            <Link to="/carrito" style={{ position: 'relative', textDecoration: 'none', color: '#333' }}>
-              <div style={{
-                padding: '8px',
-                borderRadius: '50%',
-                backgroundColor: isActive('/carrito') ? '#e8f5e9' : 'transparent',
-                transition: 'background-color 0.2s'
-              }}>
-                <span style={{ fontSize: '24px' }}>🛒</span>
-              </div>
-              {totalItems > 0 && (
-                <span style={{
-                  position: 'absolute',
-                  top: '-5px',
-                  right: '-5px',
-                  backgroundColor: '#4CAF50',
-                  color: 'white',
-                  borderRadius: '50%',
-                  width: '20px',
-                  height: '20px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '11px',
-                  fontWeight: 'bold',
-                  border: '2px solid white'
-                }}>
-                  {totalItems}
-                </span>
+          {/* Collapsible Content */}
+          <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarNav">
+            {/* Navigation Links */}
+            <ul className="navbar-nav mx-auto mb-2 mb-lg-0 align-items-center" style={{ gap: '10px' }}>
+              <li className="nav-item">
+                <Link 
+                  className="nav-link" 
+                  to="/" 
+                  onClick={handleLinkClick}
+                  style={{
+                    color: isActive('/') ? '#667eea' : '#333',
+                    fontWeight: isActive('/') ? '700' : '500',
+                    fontSize: '16px',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    backgroundColor: isActive('/') ? 'rgba(102, 126, 234, 0.1)' : 'transparent',
+                    transition: 'all 0.3s',
+                  }}
+                >
+                  Inicio
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link 
+                  className="nav-link" 
+                  to="/productos" 
+                  onClick={handleLinkClick}
+                  style={{
+                    color: isActive('/productos') ? '#667eea' : '#333',
+                    fontWeight: isActive('/productos') ? '700' : '500',
+                    fontSize: '16px',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    backgroundColor: isActive('/productos') ? 'rgba(102, 126, 234, 0.1)' : 'transparent',
+                    transition: 'all 0.3s',
+                  }}
+                >
+                  Catálogo
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link 
+                  className="nav-link" 
+                  to="/servicios" 
+                  onClick={handleLinkClick}
+                  style={{
+                    color: isActive('/servicios') ? '#667eea' : '#333',
+                    fontWeight: isActive('/servicios') ? '700' : '500',
+                    fontSize: '16px',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    backgroundColor: isActive('/servicios') ? 'rgba(102, 126, 234, 0.1)' : 'transparent',
+                    transition: 'all 0.3s',
+                  }}
+                >
+                  Servicios
+                </Link>
+              </li>
+              
+              {/* Admin Link - solo visible para admin */}
+              {user?.isAdmin && (
+                <li className="nav-item">
+                  <Link 
+                    className="nav-link" 
+                    to="/admin" 
+                    onClick={handleLinkClick}
+                    style={{
+                      color: '#f44336',
+                      fontWeight: isActive('/admin') ? '700' : '600',
+                      fontSize: '16px',
+                      padding: '8px 16px',
+                      borderRadius: '8px',
+                      backgroundColor: isActive('/admin') ? 'rgba(244, 67, 54, 0.1)' : 'transparent',
+                      transition: 'all 0.3s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '5px'
+                    }}
+                  >
+                    <span>🔧</span> Admin
+                  </Link>
+                </li>
               )}
-            </Link>
-          )}
+            </ul>
 
-          {/* Usuario / Login */}
-          {user?.isAuthenticated ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-              <div style={{ 
-                background: user?.isAdmin 
-                  ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
-                  : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                padding: '8px 16px',
-                borderRadius: '20px',
-                color: 'white',
-                fontWeight: '600',
-                fontSize: '14px',
-                boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-              }}>
-                {user?.isAdmin ? '👑 Admin' : `👤 ${user.nombre}`}
-              </div>
-              <button 
-                onClick={logout}
-                style={{
-                  background: 'transparent',
-                  border: '1px solid #ddd',
-                  borderRadius: '6px',
-                  padding: '6px 12px',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  color: '#666',
-                  transition: 'all 0.2s'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#f44336';
-                  e.currentTarget.style.color = '#f44336';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = '#ddd';
-                  e.currentTarget.style.color = '#666';
-                }}
-              >
-                Salir
-              </button>
+            {/* Right Side: Cart and User */}
+            <div className="d-flex align-items-center gap-3 justify-content-center mt-3 mt-lg-0">
+              {/* Cart Icon - NO visible para admin */}
+              {!user?.isAdmin && (
+                <Link 
+                  to="/carrito" 
+                  className="position-relative text-decoration-none" 
+                  onClick={handleLinkClick}
+                >
+                  <div 
+                    style={{
+                      padding: '8px',
+                      borderRadius: '50%',
+                      backgroundColor: isActive('/carrito') ? '#e8f5e9' : 'transparent',
+                      transition: 'background-color 0.2s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <TiShoppingCart style={{ fontSize: '28px', color: isActive('/carrito') ? '#4CAF50' : '#667eea' }} />
+                  </div>
+                  {totalItems > 0 && (
+                    <span 
+                      className="position-absolute badge rounded-pill"
+                      style={{
+                        top: '12%',
+                        right: '10%',
+                        backgroundColor: '#4CAF50',
+                        fontSize: '11px',
+                        fontWeight: 'bold',
+                        border: '2px solid white',
+                        transform: 'translate(0%, 0%)'
+                      }}
+                    >
+                      {totalItems}
+                    </span>
+                  )}
+                </Link>
+              )}
+
+              {/* User / Login */}
+              {user?.isAuthenticated ? (
+                <div className="d-flex align-items-center gap-2">
+                  <div 
+                    style={{ 
+                      background: user?.isAdmin 
+                        ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+                        : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      padding: '8px 16px',
+                      borderRadius: '20px',
+                      color: 'white',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    {user?.isAdmin ? '👑 Admin' : `👤 ${user.nombre}`}
+                  </div>
+                  <button 
+                    onClick={() => {
+                      logout();
+                      handleLinkClick();
+                    }}
+                    className="btn btn-outline-danger btn-sm"
+                    style={{
+                      borderRadius: '8px',
+                      padding: '6px 14px',
+                      fontWeight: '500',
+                      transition: 'all 0.3s'
+                    }}
+                  >
+                    Salir
+                  </button>
+                </div>
+              ) : (
+                <Link to="/login" onClick={handleLinkClick} style={{ textDecoration: 'none' }}>
+                  <button 
+                    className="btn"
+                    style={{
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      color: 'white',
+                      border: 'none',
+                      padding: '10px 24px',
+                      borderRadius: '25px',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+                      transition: 'all 0.3s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
+                    }}
+                  >
+                    Iniciar Sesión
+                  </button>
+                </Link>
+              )}
             </div>
-          ) : (
-            <Link to="/login">
-              <button style={{
-                backgroundColor: '#333',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'transform 0.2s, background-color 0.2s'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#4CAF50';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#333';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-              >
-                Iniciar Sesión
-              </button>
-            </Link>
-          )}
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      <style>{`
+        body {
+          padding-top: 80px;
+        }
+        
+        @media (max-width: 991px) {
+          .navbar-collapse {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 10px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            min-width: 250px;
+            z-index: 1000;
+          }
+          
+          .navbar-nav {
+            width: 100%;
+          }
+          
+          .nav-item {
+            width: 100%;
+            text-align: center;
+          }
+          
+          .nav-link {
+            justify-content: center;
+            display: flex;
+          }
+          
+          .d-flex.align-items-center.gap-3 {
+            flex-direction: column;
+            width: 100%;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+          }
+        }
+      `}</style>
+    </>
   )
 }
 

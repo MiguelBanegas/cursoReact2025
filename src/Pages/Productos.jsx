@@ -9,6 +9,17 @@ export default function Productos() {
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Cargar búsqueda desde localStorage al iniciar
+  const [busqueda, setBusqueda] = useState(() => {
+    const busquedaGuardada = localStorage.getItem('busquedaProductos');
+    return busquedaGuardada || '';
+  });
+
+  // Guardar búsqueda en localStorage cuando cambie
+  useEffect(() => {
+    localStorage.setItem('busquedaProductos', busqueda);
+  }, [busqueda]);
 
   useEffect(() => {
     const cargarProductos = async () => {
@@ -53,19 +64,119 @@ export default function Productos() {
     showToast(`${producto.nombre} agregado al carrito`, 'success');
   };
 
+  // Filtrar productos según el término de búsqueda
+  const productosFiltrados = productos.filter(producto =>
+    producto.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  );
+
   if (cargando) return <p>Cargando productos...</p>;
   if (error) return <p style={{ color: 'red', textAlign: 'center', padding: '20px' }}>{error}</p>;
 
   return (
     <div style={{ maxWidth: '1200px', margin: '20px auto', padding: '20px' }}>
-      <h1 style={{ marginBottom: '30px', fontSize: '32px', fontWeight: 'bold' }}>🛍️ Nuestros Productos</h1>
+      <h1 style={{ marginBottom: '20px', fontSize: '32px', fontWeight: 'bold' }}>🛍️ Nuestros Productos</h1>
+      
+      {/* Buscador */}
+      <div style={{ marginBottom: '30px' }}>
+        <div style={{ position: 'relative', maxWidth: '500px' }}>
+          {/* Icono de lupa */}
+          <span style={{
+            position: 'absolute',
+            left: '20px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            fontSize: '18px',
+            color: '#999',
+            pointerEvents: 'none',
+            zIndex: 1
+          }}>
+            🔍
+          </span>
+          
+          <input
+            type="text"
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            placeholder="Buscar productos por nombre..."
+            style={{
+              width: '100%',
+              padding: '14px 50px 14px 50px',
+              fontSize: '16px',
+              border: '2px solid #e0e0e0',
+              borderRadius: '30px',
+              outline: 'none',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = '#4CAF50';
+              e.target.style.boxShadow = '0 4px 12px rgba(76, 175, 80, 0.2)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = '#e0e0e0';
+              e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
+            }}
+          />
+          {busqueda && (
+            <button
+              onClick={() => setBusqueda('')}
+              style={{
+                position: 'absolute',
+                right: '15px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                fontSize: '20px',
+                cursor: 'pointer',
+                color: '#999',
+                padding: '5px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 1
+              }}
+              onMouseEnter={(e) => e.target.style.color = '#333'}
+              onMouseLeave={(e) => e.target.style.color = '#999'}
+            >
+              ✕
+            </button>
+          )}
+        </div>
+        
+        {/* Resultados de búsqueda */}
+        {busqueda && (
+          <p style={{
+            marginTop: '10px',
+            fontSize: '14px',
+            color: '#666'
+          }}>
+            {productosFiltrados.length === 0 
+              ? `No se encontraron productos con "${busqueda}"`
+              : `Mostrando ${productosFiltrados.length} ${productosFiltrados.length === 1 ? 'producto' : 'productos'} de ${productos.length}`
+            }
+          </p>
+        )}
+      </div>
       
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
         gap: '20px' 
       }}>
-        {productos.map((producto) => (
+        {productosFiltrados.length === 0 && busqueda ? (
+          <div style={{
+            gridColumn: '1 / -1',
+            textAlign: 'center',
+            padding: '60px 20px',
+            color: '#999'
+          }}>
+            <div style={{ fontSize: '64px', marginBottom: '20px' }}>🔍</div>
+            <h3 style={{ fontSize: '24px', color: '#666', marginBottom: '10px' }}>No se encontraron productos</h3>
+            <p style={{ fontSize: '16px' }}>Intenta con otro término de búsqueda</p>
+          </div>
+        ) : (
+          productosFiltrados.map((producto) => (
           <div 
             key={producto.id}
             style={{
@@ -200,7 +311,8 @@ export default function Productos() {
               </div>
             </div>
           </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

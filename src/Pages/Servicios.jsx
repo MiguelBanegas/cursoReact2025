@@ -173,7 +173,6 @@ function Servicios() {
 
         {/* CTA Section */}
         <div style={{
-          background: 'white',
           borderRadius: '20px',
           padding: '50px 30px',
           textAlign: 'center',
