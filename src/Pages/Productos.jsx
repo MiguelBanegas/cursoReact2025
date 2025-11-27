@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
@@ -10,15 +10,27 @@ export default function Productos() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   
+  // Ref para hacer scroll al inicio de los productos
+  const productosRef = useRef(null);
+  
   // Cargar búsqueda desde localStorage al iniciar
   const [busqueda, setBusqueda] = useState(() => {
     const busquedaGuardada = localStorage.getItem('busquedaProductos');
     return busquedaGuardada || '';
   });
 
+  // Estado para la paginación
+  const [paginaActual, setPaginaActual] = useState(1);
+  const productosPorPagina = 6;
+
   // Guardar búsqueda en localStorage cuando cambie
   useEffect(() => {
     localStorage.setItem('busquedaProductos', busqueda);
+  }, [busqueda]);
+
+  // Resetear página al buscar
+  useEffect(() => {
+    setPaginaActual(1);
   }, [busqueda]);
 
   useEffect(() => {
@@ -38,7 +50,6 @@ export default function Productos() {
         }
         
         // Convertir el precio de string a número
-        // Eliminar puntos (separadores de miles) antes de convertir
         const productosNormalizados = datos.map(producto => ({
           ...producto,
           precio: typeof producto.precio === 'string' 
@@ -69,12 +80,27 @@ export default function Productos() {
     producto.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
 
+  // Lógica de paginación
+  const indiceUltimoProducto = paginaActual * productosPorPagina;
+  const indicePrimerProducto = indiceUltimoProducto - productosPorPagina;
+  const productosPaginados = productosFiltrados.slice(indicePrimerProducto, indiceUltimoProducto);
+  const totalPaginas = Math.ceil(productosFiltrados.length / productosPorPagina);
+
+  const cambiarPagina = (numeroPagina) => {
+    setPaginaActual(numeroPagina);
+    // Scroll al top de la página
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   if (cargando) return <p>Cargando productos...</p>;
   if (error) return <p style={{ color: 'red', textAlign: 'center', padding: '20px' }}>{error}</p>;
 
   return (
     <div style={{ maxWidth: '1200px', margin: '20px auto', padding: '20px' }}>
-      <h1 style={{ marginBottom: '20px', fontSize: '32px', fontWeight: 'bold' }}>🛍️ Nuestros Productos</h1>
+      <h1 ref={productosRef} style={{ marginBottom: '20px', fontSize: '32px', fontWeight: 'bold' }}>🛍️ Nuestros Productos</h1>
       
       {/* Buscador */}
       <div style={{ marginBottom: '30px' }}>
@@ -162,7 +188,8 @@ export default function Productos() {
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
-        gap: '20px' 
+        gap: '20px',
+        marginBottom: '40px'
       }}>
         {productosFiltrados.length === 0 && busqueda ? (
           <div style={{
@@ -176,7 +203,7 @@ export default function Productos() {
             <p style={{ fontSize: '16px' }}>Intenta con otro término de búsqueda</p>
           </div>
         ) : (
-          productosFiltrados.map((producto) => (
+          productosPaginados.map((producto) => (
           <div 
             key={producto.id}
             style={{
@@ -314,6 +341,49 @@ export default function Productos() {
           ))
         )}
       </div>
+
+      {/* Controles de Paginación */}
+      {totalPaginas > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginTop: '20px' }}>
+          <button
+            onClick={() => cambiarPagina(paginaActual - 1)}
+            disabled={paginaActual === 1}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: paginaActual === 1 ? '#e0e0e0' : '#667eea',
+              color: paginaActual === 1 ? '#999' : 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: paginaActual === 1 ? 'not-allowed' : 'pointer',
+              fontWeight: '600',
+              transition: 'all 0.3s'
+            }}
+          >
+            ← Anterior
+          </button>
+          
+          <span style={{ fontSize: '16px', fontWeight: '500', color: '#555' }}>
+            Página {paginaActual} de {totalPaginas}
+          </span>
+          
+          <button
+            onClick={() => cambiarPagina(paginaActual + 1)}
+            disabled={paginaActual === totalPaginas}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: paginaActual === totalPaginas ? '#e0e0e0' : '#667eea',
+              color: paginaActual === totalPaginas ? '#999' : 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: paginaActual === totalPaginas ? 'not-allowed' : 'pointer',
+              fontWeight: '600',
+              transition: 'all 0.3s'
+            }}
+          >
+            Siguiente →
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -61,8 +61,9 @@ function Navbar() {
             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            <PiMotorcycleFill style={{ marginRight: '8px', fontSize: '32px', color: '#667eea' }} />
-            MAB Motors
+            <PiMotorcycleFill className="brand-icon" style={{ marginRight: '8px', fontSize: '32px', color: '#667eea' }} />
+            <span className="brand-text-full">MAB Motors</span>
+            <span className="brand-text-short">MAB</span>
           </Link>
 
           {/* Cart Icon - Visible always (except admin) */}
@@ -74,6 +75,7 @@ function Navbar() {
                 onClick={handleLinkClick}
               >
                 <div 
+                  className="cart-icon-container"
                   style={{
                     padding: '8px',
                     borderRadius: '50%',
@@ -283,6 +285,48 @@ function Navbar() {
           padding-top: 80px;
         }
         
+        /* Responsive para pantallas muy pequeñas (360px) */
+        @media (max-width: 400px) {
+          .navbar-brand {
+            font-size: 20px !important;
+          }
+          .navbar-brand .brand-icon {
+            font-size: 26px !important;
+            margin-right: 6px !important;
+          }
+          .brand-text-full {
+            display: none;
+          }
+          .brand-text-short {
+            display: inline;
+          }
+          .cart-icon-container {
+            padding: 6px !important;
+          }
+          .cart-icon-container svg {
+            font-size: 24px !important;
+          }
+          .navbar-toggler {
+            padding: 6px 10px !important;
+          }
+          .navbar-toggler-icon {
+            width: 20px;
+            height: 20px;
+          }
+          body {
+            padding-top: 70px;
+          }
+          .navbar {
+            padding: 10px 0 !important;
+          }
+        }
+        
+        @media (min-width: 401px) {
+          .brand-text-short {
+            display: none;
+          }
+        }
+        
         @media (max-width: 991px) {
           .navbar-collapse {
             position: absolute;
@@ -302,7 +346,6 @@ function Navbar() {
           }
           
           .nav-item {
-            width: 100%;
             text-align: center;
           }
           
@@ -312,7 +355,6 @@ function Navbar() {
           }
           
           .d-flex.align-items-center.gap-3 {
-            flex-direction: column;
             width: 100%;
             padding-top: 15px;
             border-top: 1px solid #e0e0e0;
