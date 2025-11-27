@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { CiLogin } from "react-icons/ci";
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true); // Toggle entre login y registro
@@ -160,251 +161,134 @@ export default function Login() {
     }
   };
 
-  // Estilos para inputs con validación
-  const getInputStyle = (fieldName) => ({
-    width: '100%',
-    padding: '12px',
-    fontSize: '16px',
-    border: errors[fieldName]
-      ? '2px solid #f44336'
-      : '1px solid #ddd',
-    borderRadius: '6px',
-    outline: 'none',
-    transition: 'border-color 0.2s'
-  });
-
   return (
-    <div style={{ 
-      maxWidth: '450px', 
-      margin: '50px auto', 
-      padding: '30px',
-      backgroundColor: 'white',
-      borderRadius: '12px',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-    }}>
-      {/* Título */}
-      <h2 style={{ 
-        textAlign: 'center', 
-        marginBottom: '10px',
-        fontSize: '28px',
-        color: '#333'
-      }}>
-        {isLogin ? '🔐 Iniciar Sesión' : '📝 Registrarse'}
-      </h2>
-      
-      <p style={{ 
-        textAlign: 'center', 
-        color: '#666', 
-        marginBottom: '30px',
-        fontSize: '14px'
-      }}>
-        {isLogin 
-          ? 'Ingresa tus credenciales para continuar' 
-          : 'Crea una cuenta para comenzar a comprar'}
-      </p>
-
-      <form onSubmit={handleSubmit}>
-        {/* Campo Nombre (solo en registro) */}
-        {!isLogin && (
-          <div style={{ marginBottom: '20px' }}>
-            <label htmlFor="nombre" style={{ 
-              display: 'block', 
-              marginBottom: '8px',
-              fontWeight: '500',
-              color: '#333'
-            }}>
-              Nombre completo *
-            </label>
-            <input
-              type="text"
-              id="nombre"
-              name="nombre"
-              value={nombre}
-              onChange={(e) => handleInputChange('nombre', e.target.value)}
-              onBlur={() => validateField('nombre', nombre)}
-              placeholder="Ej: Juan Pérez"
-              autoComplete="name"
-              style={getInputStyle('nombre')}
-              required={!isLogin}
-            />
-            {errors.nombre && (
-              <p style={{ color: '#f44336', fontSize: '13px', margin: '5px 0 0 0' }}>
-                {errors.nombre}
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Campo Email */}
-        <div style={{ marginBottom: '20px' }}>
-          <label htmlFor="email" style={{ 
-            display: 'block', 
-            marginBottom: '8px',
-            fontWeight: '500',
-            color: '#333'
-          }}>
-            Email *
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
-            onBlur={() => validateField('email', email)}
-            placeholder="tu@email.com"
-            autoComplete="email"
-            style={getInputStyle('email')}
-            required
-          />
-          {errors.email && (
-            <p style={{ color: '#f44336', fontSize: '13px', margin: '5px 0 0 0' }}>
-              {errors.email}
-            </p>
-          )}
-        </div>
-
-        {/* Campo Contraseña */}
-        <div style={{ marginBottom: '20px' }}>
-          <label htmlFor="password" style={{ 
-            display: 'block', 
-            marginBottom: '8px',
-            fontWeight: '500',
-            color: '#333'
-          }}>
-            Contraseña *
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={(e) => handleInputChange('password', e.target.value)}
-            onBlur={() => validateField('password', password)}
-            placeholder="Mínimo 6 caracteres"
-            autoComplete={isLogin ? "current-password" : "new-password"}
-            style={getInputStyle('password')}
-            required
-          />
-          {errors.password && (
-            <p style={{ color: '#f44336', fontSize: '13px', margin: '5px 0 0 0' }}>
-              {errors.password}
-            </p>
-          )}
-        </div>
-
-        {/* Campo Confirmar Contraseña (solo en registro) */}
-        {!isLogin && (
-          <div style={{ marginBottom: '20px' }}>
-            <label htmlFor="confirmPassword" style={{ 
-              display: 'block', 
-              marginBottom: '8px',
-              fontWeight: '500',
-              color: '#333'
-            }}>
-              Confirmar contraseña *
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-              onBlur={() => validateField('confirmPassword', confirmPassword)}
-              placeholder="Repite tu contraseña"
-              autoComplete="new-password"
-              style={getInputStyle('confirmPassword')}
-              required={!isLogin}
-            />
-            {errors.confirmPassword && (
-              <p style={{ color: '#f44336', fontSize: '13px', margin: '5px 0 0 0' }}>
-                {errors.confirmPassword}
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Botón Submit */}
-        <button
-          type="submit"
-          disabled={loading || Object.keys(errors).length > 0}
-          style={{
-            width: '100%',
-            padding: '14px',
-            fontSize: '16px',
-            fontWeight: '600',
-            backgroundColor: loading || Object.keys(errors).length > 0 ? '#ccc' : '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: loading || Object.keys(errors).length > 0 ? 'not-allowed' : 'pointer',
-            transition: 'background-color 0.2s',
-            marginBottom: '20px'
-          }}
-        >
-          {loading ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-              <svg 
-                style={{ 
-                  animation: 'spin 1s linear infinite', 
-                  height: '20px', 
-                  width: '20px', 
-                  color: 'white' 
-                }} 
-                xmlns="http://www.w3.org/2000/svg" 
-                fill="none" 
-                viewBox="0 0 24 24"
-              >
-                <circle 
-                  style={{ opacity: 0.25 }} 
-                  cx="12" 
-                  cy="12" 
-                  r="10" 
-                  stroke="currentColor" 
-                  strokeWidth="4"
-                ></circle>
-                <path 
-                  style={{ opacity: 0.75 }} 
-                  fill="currentColor" 
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-                <style>
-                  {`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}
-                </style>
-              </svg>
-              <span>{isLogin ? 'Iniciando sesión...' : 'Registrando...'}</span>
+    <div className="container d-flex justify-content-center align-items-center min-vh-100" style={{ background: '#f8f9fa' }}>
+      <div className="card shadow-lg border-0" style={{ width: '100%', maxWidth: '450px', borderRadius: '15px' }}>
+        <div className="card-body p-5">
+          {/* Header */}
+          <div className="text-center mb-4">
+            <div className="mb-3 d-inline-block p-3 rounded-circle" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+              <CiLogin style={{ fontSize: '40px', color: 'white' }} />
             </div>
-          ) : (
-            isLogin ? 'Iniciar Sesión' : 'Registrarse'
-          )}
-        </button>
-      </form>
+            <h2 className="fw-bold mb-1" style={{ color: '#333' }}>
+              {isLogin ? 'Bienvenido' : 'Crear Cuenta'}
+            </h2>
+            <p className="fw-bold">
+              {isLogin 
+                ? 'Ingresa tus credenciales para continuar' 
+                : 'Regístrate para comenzar a comprar'}
+            </p>
+          </div>
 
-      {/* Toggle entre Login y Registro */}
-      <div style={{ 
-        textAlign: 'center',
-        paddingTop: '20px',
-        borderTop: '1px solid #e0e0e0'
-      }}>
-        <p style={{ color: '#666', fontSize: '14px', marginBottom: '10px' }}>
-          {isLogin ? '¿No tienes una cuenta?' : '¿Ya tienes una cuenta?'}
-        </p>
-        <button
-          type="button"
-          onClick={toggleMode}
-          disabled={loading}
-          style={{
-            backgroundColor: 'transparent',
-            color: '#2196F3',
-            border: 'none',
-            fontSize: '15px',
-            fontWeight: '600',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            textDecoration: 'underline'
-          }}
-        >
-          {isLogin ? 'Crear cuenta nueva' : 'Iniciar sesión'}
-        </button>
+          <form onSubmit={handleSubmit}>
+            {/* Campo Nombre (solo en registro) */}
+            {!isLogin && (
+              <div className="mb-3">
+                <label htmlFor="nombre" className="form-label fw-semibold small text-secondary">Nombre completo</label>
+                <input
+                  type="text"
+                  className={`form-control form-control-lg ${errors.nombre ? 'is-invalid' : ''}`}
+                  id="nombre"
+                  value={nombre}
+                  onChange={(e) => handleInputChange('nombre', e.target.value)}
+                  onBlur={() => validateField('nombre', nombre)}
+                  placeholder="Ej: Juan Pérez"
+                  style={{ fontSize: '15px' }}
+                />
+                {errors.nombre && <div className="invalid-feedback">{errors.nombre}</div>}
+              </div>
+            )}
+
+            {/* Campo Email */}
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label fw-semibold small text-secondary">Email</label>
+              <input
+                type="email"
+                className={`form-control form-control-lg ${errors.email ? 'is-invalid' : ''}`}
+                id="email"
+                value={email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                onBlur={() => validateField('email', email)}
+                placeholder="tu@email.com"
+                style={{ fontSize: '15px' }}
+              />
+              {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+            </div>
+
+            {/* Campo Contraseña */}
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label fw-semibold small text-secondary">Contraseña</label>
+              <input
+                type="password"
+                className={`form-control form-control-lg ${errors.password ? 'is-invalid' : ''}`}
+                id="password"
+                value={password}
+                onChange={(e) => handleInputChange('password', e.target.value)}
+                onBlur={() => validateField('password', password)}
+                placeholder="Mínimo 6 caracteres"
+                style={{ fontSize: '15px' }}
+              />
+              {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+            </div>
+
+            {/* Campo Confirmar Contraseña (solo en registro) */}
+            {!isLogin && (
+              <div className="mb-4">
+                <label htmlFor="confirmPassword" className="form-label fw-semibold small text-secondary">Confirmar contraseña</label>
+                <input
+                  type="password"
+                  className={`form-control form-control-lg ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                  onBlur={() => validateField('confirmPassword', confirmPassword)}
+                  placeholder="Repite tu contraseña"
+                  style={{ fontSize: '15px' }}
+                />
+                {errors.confirmPassword && <div className="invalid-feedback">{errors.confirmPassword}</div>}
+              </div>
+            )}
+
+            {/* Botón Submit */}
+            <button
+              type="submit"
+              className="btn w-100 py-3 mt-2 fw-bold text-white shadow-sm"
+              disabled={loading || Object.keys(errors).length > 0}
+              style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                border: 'none',
+                borderRadius: '8px',
+                transition: 'transform 0.2s',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              {loading ? (
+                <div className="d-flex align-items-center justify-content-center gap-2">
+                  <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span>Procesando...</span>
+                </div>
+              ) : (
+                isLogin ? 'Iniciar Sesión' : 'Registrarse'
+              )}
+            </button>
+          </form>
+
+          {/* Toggle entre Login y Registro */}
+          <div className="text-center mt-4 pt-3 border-top">
+            <p className="fst-italic">
+              {isLogin ? '¿No tienes una cuenta?' : '¿Ya tienes una cuenta?'}
+            </p>
+            <button
+              type="button"
+              onClick={toggleMode}
+              className="btn btn-link text-decoration-none fw-bold p-0"
+              style={{ color: '#667eea' }}
+            >
+              {isLogin ? 'Crear cuenta nueva' : 'Iniciar sesión'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
