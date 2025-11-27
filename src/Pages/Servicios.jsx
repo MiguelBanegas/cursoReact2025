@@ -74,7 +74,8 @@ function Servicios() {
           position: 'relative',
           lineHeight: '1.6'
         }}>
-          Tu satisfacción es nuestra prioridad. Ofrecemos servicios integrales para que tu experiencia con nosotros sea excepcional.
+          Tu satisfacción es nuestra prioridad. <br />
+          Ofrecemos servicios integrales para que tu experiencia con nosotros sea excepcional.
         </p>
       </div>
 

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useToast } from '../context/ToastContext';
 import ConfirmModal from '../components/ConfirmModal';
 import ProductCreatedModal from '../components/ProductCreatedModal';
+import { FaEdit, FaTrash, FaPlus, FaTimes, FaSave, FaImage, FaSearch, FaBoxOpen } from 'react-icons/fa';
 
 export default function AdminPanel() {
   const [productos, setProductos] = useState([]);
@@ -116,11 +117,7 @@ export default function AdminPanel() {
 
   // Manejar cambios en inputs con validación en tiempo real
   const handleInputChange = (name, value) => {
-    // NO aplicar trim aquí para permitir espacios entre palabras
     setFormData({ ...formData, [name]: value });
-    
-    // Validar solo si el campo ya tiene contenido o ya se mostró un error
-    // NO validar precio en onChange (se validará en onBlur)
     if (name !== 'precio' && (value.length > 0 || errors[name])) {
       validateField(name, value);
     }
@@ -138,13 +135,9 @@ export default function AdminPanel() {
   // Manejar cambios en URL de imagen con preview
   const handleImageUrlChange = (value) => {
     setFormData({ ...formData, avatar: value });
-    
-    // Validar URL
     if (value.length > 0 || errors.avatar) {
       validateField('avatar', value);
     }
-
-    // Intentar cargar preview
     const imageExtensions = /\.(jpg|jpeg|png|gif|webp)$/i;
     try {
       const url = new URL(value);
@@ -178,15 +171,12 @@ export default function AdminPanel() {
   // CREATE
   const crearProducto = async (e) => {
     e.preventDefault();
-    
     if (!validateForm()) {
       showToast('Por favor corrige los errores del formulario', 'error');
       return;
     }
-
     setLoading(true);
     try {
-      // Calcular el nuevo ID como máximo ID existente + 1
       const maxId = productos.length > 0 
         ? Math.max(...productos.map(p => parseInt(p.id))) 
         : 0;
@@ -208,7 +198,6 @@ export default function AdminPanel() {
         showToast('Producto creado exitosamente', 'success');
         cargarProductos();
         resetForm();
-        // Mostrar modal de éxito
         setProductCreatedModal({ isOpen: true, productName });
       }
     } catch (error) {
@@ -221,12 +210,10 @@ export default function AdminPanel() {
   // UPDATE
   const actualizarProducto = async (e) => {
     e.preventDefault();
-    
     if (!validateForm()) {
       showToast('Por favor corrige los errores del formulario', 'error');
       return;
     }
-
     setLoading(true);
     try {
       const response = await fetch(`https://6921d58e512fb4140be183e1.mockapi.io/api/productos/${editando}`, {
@@ -303,340 +290,257 @@ export default function AdminPanel() {
     setModalConfig({ isOpen: false, onConfirm: null, productName: '' });
   };
 
-  // Estilos para inputs con validación
-  const getInputStyle = (fieldName) => ({
-    width: '100%',
-    padding: '8px',
-    marginTop: '5px',
-    border: errors[fieldName] 
-      ? '2px solid #f44336' 
-      : formData[fieldName] && !errors[fieldName] 
-        ? '2px solid #4CAF50' 
-        : '1px solid #ccc',
-    borderRadius: '4px',
-    outline: 'none',
-    transition: 'border-color 0.2s'
-  });
-
-  if (cargando) return <p>Cargando...</p>;
+  if (cargando) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '20px auto', padding: '20px' }}>
-      <h1>🔧 Panel de Administración</h1>
-      
-      <button 
-        onClick={() => setMostrarForm(!mostrarForm)}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#4CAF50',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          marginBottom: '20px'
-        }}
-      >
-        {mostrarForm ? 'Cancelar' : '+ Nuevo Producto'}
-      </button>
+    <div className="container py-5">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="mb-0 fw-bold" style={{ 
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
+          <span className="me-2">🔧</span> Panel de Administración
+        </h1>
+        
+        {!mostrarForm && (
+          <button 
+            onClick={() => setMostrarForm(true)}
+            className="btn btn-success d-flex align-items-center gap-2 shadow-sm rounded-pill px-4"
+            style={{ transition: 'all 0.3s' }}
+          >
+            <FaPlus /> Nuevo Producto
+          </button>
+        )}
+      </div>
 
       {/* FORMULARIO */}
       {mostrarForm && (
-        <form 
-          onSubmit={editando ? actualizarProducto : crearProducto}
-          style={{
-            backgroundColor: '#f5f5f5',
-            padding: '20px',
-            borderRadius: '8px',
-            marginBottom: '30px'
-          }}
-        >
-          <h3>{editando ? 'Editar Producto' : 'Crear Producto'}</h3>
-          
-          <div style={{ marginBottom: '15px' }}>
-            <label>Nombre: *</label>
-            <input
-              ref={nombreInputRef}
-              type="text"
-              value={formData.nombre}
-              onChange={(e) => handleInputChange('nombre', e.target.value)}
-              onBlur={() => handleBlur('nombre')}
-              required
-              minLength={3}
-              maxLength={100}
-              placeholder="Ej: Notebook Dell Inspiron"
-              style={getInputStyle('nombre')}
-            />
-            {errors.nombre && (
-              <p style={{ color: '#f44336', fontSize: '13px', margin: '5px 0 0 0' }}>
-                {errors.nombre}
-              </p>
-            )}
-          </div>
-
-          <div style={{ marginBottom: '15px' }}>
-            <label>Descripción: *</label>
-            <textarea
-              value={formData.descripcion}
-              onChange={(e) => handleInputChange('descripcion', e.target.value)}
-              onBlur={() => handleBlur('descripcion')}
-              required
-              minLength={10}
-              maxLength={500}
-              placeholder="Describe las características principales del producto..."
-              style={{ ...getInputStyle('descripcion'), minHeight: '80px' }}
-            />
-            
-            {/* Contador de caracteres y errores */}
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              marginTop: '5px'
-            }}>
-              {errors.descripcion && (
-                <p style={{ color: '#f44336', fontSize: '13px', margin: 0 }}>
-                  {errors.descripcion}
-                </p>
-              )}
-              <p style={{ 
-                color: formData.descripcion.length > 450 ? '#f44336' : '#666',
-                fontSize: '13px', 
-                margin: 0,
-                marginLeft: errors.descripcion ? '10px' : 'auto'
-              }}>
-                {formData.descripcion.length}/500 caracteres
-              </p>
-            </div>
-          </div>
-
-          <div style={{ marginBottom: '15px' }}>
-            <label>Precio: *</label>
-            <input
-              type="number"
-              value={formData.precio}
-              onChange={(e) => handleInputChange('precio', e.target.value)}
-              onBlur={(e) => validateField('precio', e.target.value)}
-              required
-              min="0.01"
-              step="0.01"
-              placeholder="Ej: 15000"
-              style={getInputStyle('precio')}
-            />
-            {errors.precio && (
-              <p style={{ color: '#f44336', fontSize: '13px', margin: '5px 0 0 0' }}>
-                {errors.precio}
-              </p>
-            )}
-          </div>
-
-          <div style={{ marginBottom: '15px' }}>
-            <label>URL de Imagen: *</label>
-            <input
-              type="url"
-              value={formData.avatar}
-              onChange={(e) => handleImageUrlChange(e.target.value)}
-              required
-              style={getInputStyle('avatar')}
-              placeholder="https://ejemplo.com/imagen.jpg"
-            />
-            {errors.avatar && (
-              <p style={{ color: '#f44336', fontSize: '13px', margin: '5px 0 0 0' }}>
-                {errors.avatar}
-              </p>
-            )}
-            
-            {/* Preview de imagen */}
-            {imagePreview && !errors.avatar && (
-              <div style={{ marginTop: '10px' }}>
-                <p style={{ fontSize: '13px', color: '#666', margin: '0 0 5px 0' }}>
-                  Vista previa:
-                </p>
-                <img 
-                  src={imagePreview} 
-                  alt="Preview"
-                  style={{ 
-                    width: '200px', 
-                    height: '200px', 
-                    objectFit: 'cover', 
-                    borderRadius: '8px',
-                    border: '2px solid #4CAF50'
-                  }}
-                  onError={() => {
-                    setImagePreview('');
-                    setErrors({ ...errors, avatar: 'No se pudo cargar la imagen' });
-                  }}
-                />
-              </div>
-            )}
-          </div>
-
-          <div style={{ display: 'flex', gap: '10px' }}>
+        <div className="card border-0 shadow-lg rounded-4 mb-5 animate__animated animate__fadeIn">
+          <div className="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+            <h3 className="mb-0 fw-bold text-secondary">
+              {editando ? <><FaEdit className="me-2"/>Editar Producto</> : <><FaPlus className="me-2"/>Crear Producto</>}
+            </h3>
             <button 
-              type="submit"
-              disabled={loading || Object.keys(errors).length > 0}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: loading || Object.keys(errors).length > 0 ? '#ccc' : '#4CAF50',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: loading || Object.keys(errors).length > 0 ? 'not-allowed' : 'pointer'
-              }}
-            >
-              {loading 
-                ? (editando ? 'Actualizando...' : 'Creando...') 
-                : (editando ? 'Actualizar' : 'Crear')
-              }
-            </button>
-            <button 
-              type="button"
               onClick={resetForm}
-              disabled={loading}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: loading ? '#ccc' : '#999',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: loading ? 'not-allowed' : 'pointer'
-              }}
+              className="btn btn-light rounded-circle p-2"
+              title="Cerrar formulario"
             >
-              Cancelar
+              <FaTimes />
             </button>
           </div>
-        </form>
+          <div className="card-body p-4">
+            <form onSubmit={editando ? actualizarProducto : crearProducto}>
+              <div className="row g-3">
+                <div className="col-md-6">
+                  <div className="form-floating mb-3">
+                    <input
+                      ref={nombreInputRef}
+                      type="text"
+                      className={`form-control ${errors.nombre ? 'is-invalid' : ''}`}
+                      id="nombre"
+                      placeholder="Nombre del producto"
+                      value={formData.nombre}
+                      onChange={(e) => handleInputChange('nombre', e.target.value)}
+                      onBlur={() => handleBlur('nombre')}
+                      required
+                      minLength={3}
+                      maxLength={100}
+                    />
+                    <label htmlFor="nombre">Nombre del producto *</label>
+                    {errors.nombre && <div className="invalid-feedback">{errors.nombre}</div>}
+                  </div>
+
+                  <div className="form-floating mb-3">
+                    <input
+                      type="number"
+                      className={`form-control ${errors.precio ? 'is-invalid' : ''}`}
+                      id="precio"
+                      placeholder="Precio"
+                      value={formData.precio}
+                      onChange={(e) => handleInputChange('precio', e.target.value)}
+                      onBlur={(e) => validateField('precio', e.target.value)}
+                      required
+                      min="0.01"
+                      step="0.01"
+                    />
+                    <label htmlFor="precio">Precio *</label>
+                    {errors.precio && <div className="invalid-feedback">{errors.precio}</div>}
+                  </div>
+
+                  <div className="form-floating mb-3">
+                    <input
+                      type="url"
+                      className={`form-control ${errors.avatar ? 'is-invalid' : ''}`}
+                      id="avatar"
+                      placeholder="URL de imagen"
+                      value={formData.avatar}
+                      onChange={(e) => handleImageUrlChange(e.target.value)}
+                      required
+                    />
+                    <label htmlFor="avatar">URL de Imagen *</label>
+                    {errors.avatar && <div className="invalid-feedback">{errors.avatar}</div>}
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <div className="form-floating mb-3 h-100">
+                    <textarea
+                      className={`form-control ${errors.descripcion ? 'is-invalid' : ''}`}
+                      id="descripcion"
+                      placeholder="Descripción"
+                      value={formData.descripcion}
+                      onChange={(e) => handleInputChange('descripcion', e.target.value)}
+                      onBlur={() => handleBlur('descripcion')}
+                      required
+                      minLength={10}
+                      maxLength={500}
+                      style={{ height: '100%', minHeight: '120px' }}
+                    ></textarea>
+                    <label htmlFor="descripcion">Descripción *</label>
+                    <div className="d-flex justify-content-between mt-1">
+                      {errors.descripcion && <div className="invalid-feedback d-block">{errors.descripcion}</div>}
+                      <small className={`text-muted ms-auto ${formData.descripcion.length > 450 ? 'text-danger' : ''}`}>
+                        {formData.descripcion.length}/500
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Preview de imagen */}
+              {imagePreview && !errors.avatar && (
+                <div className="mb-4 p-3 bg-light rounded-3 text-center">
+                  <p className="text-muted small mb-2">Vista previa de la imagen</p>
+                  <img 
+                    src={imagePreview} 
+                    alt="Preview"
+                    className="img-fluid rounded shadow-sm"
+                    style={{ maxHeight: '200px', objectFit: 'contain' }}
+                    onError={() => {
+                      setImagePreview('');
+                      setErrors({ ...errors, avatar: 'No se pudo cargar la imagen' });
+                    }}
+                  />
+                </div>
+              )}
+
+              <div className="d-flex gap-2 justify-content-end mt-4">
+                <button 
+                  type="button"
+                  onClick={resetForm}
+                  disabled={loading}
+                  className="btn btn-light px-4"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="submit"
+                  disabled={loading || Object.keys(errors).length > 0}
+                  className="btn btn-primary px-4 d-flex align-items-center gap-2"
+                  style={{
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    border: 'none'
+                  }}
+                >
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      {editando ? 'Actualizando...' : 'Creando...'}
+                    </>
+                  ) : (
+                    <>
+                      <FaSave /> {editando ? 'Actualizar Producto' : 'Guardar Producto'}
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
 
       {/* LISTA DE PRODUCTOS */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
-        gap: '20px' 
-      }}>
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
         {productos.map(producto => (
-          <div 
-            key={producto.id}
-            style={{
-              border: '1px solid #e0e0e0',
-              borderRadius: '12px',
-              overflow: 'hidden',
-              backgroundColor: 'white',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%'
-            }}
-          >
-            {/* Imagen del producto */}
-            <div style={{ position: 'relative', overflow: 'hidden' }}>
-              <img 
-                src={producto.avatar} 
-                alt={producto.nombre}
-                style={{ 
-                  width: '100%', 
-                  height: '200px', 
-                  objectFit: 'cover'
-                }}
-              />
-            </div>
-            
-            {/* Contenido de la tarjeta */}
-            <div style={{ 
-              padding: '15px',
-              display: 'flex',
-              flexDirection: 'column',
-              flexGrow: 1
-            }}>
-              {/* Título */}
-              <h3 style={{ 
-                margin: '0 0 10px 0',
-                fontSize: '18px',
-                fontWeight: '600',
-                color: '#333',
-                minHeight: '44px',
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden'
-              }}>
-                {producto.nombre}
-              </h3>
+          <div key={producto.id} className="col">
+            <div className="card h-100 border-0 shadow-sm hover-lift rounded-4 overflow-hidden">
+              <div className="position-relative" style={{ height: '200px', overflow: 'hidden' }}>
+                <img 
+                  src={producto.avatar} 
+                  alt={producto.nombre}
+                  className="w-100 h-100 object-fit-cover"
+                  style={{ transition: 'transform 0.3s' }}
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                />
+                <div className="position-absolute top-0 end-0 p-2">
+                  <span className="badge bg-white text-dark shadow-sm rounded-pill">
+                    ID: {producto.id}
+                  </span>
+                </div>
+              </div>
               
-              {/* Descripción truncada */}
-              <p style={{ 
-                margin: '0 0 10px 0',
-                fontSize: '14px',
-                color: '#666',
-                lineHeight: '1.4'
-              }}>
-                {producto.descripcion.length > 30 
-                  ? producto.descripcion.substring(0, 30) + '...' 
-                  : producto.descripcion}
-              </p>
-              
-              {/* Precio */}
-              <p style={{ 
-                margin: '0 0 15px 0',
-                fontSize: '24px', 
-                fontWeight: 'bold',
-                color: '#4CAF50'
-              }}>
-                ${typeof producto.precio === 'string' 
-                  ? parseFloat(producto.precio.replace(/\./g, '')).toLocaleString('es-AR')
-                  : parseFloat(producto.precio).toLocaleString('es-AR')
-                }
-              </p>
-              
-              {/* Espaciador para empujar botones al fondo */}
-              <div style={{ flexGrow: 1 }}></div>
-              
-              {/* Botones en la parte inferior */}
-              <div style={{ 
-                display: 'flex', 
-                gap: '10px',
-                marginTop: 'auto'
-              }}>
-                <button
-                  onClick={() => editarProducto(producto)}
-                  disabled={loading}
-                  style={{
-                    flex: 1,
-                    padding: '10px',
-                    backgroundColor: loading ? '#ccc' : '#2196F3',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    transition: 'background-color 0.2s'
-                  }}
-                >
-                  ✏️ Editar
-                </button>
-                <button
-                  onClick={() => openDeleteModal(producto.id, producto.nombre)}
-                  disabled={loading}
-                  style={{
-                    flex: 1,
-                    padding: '10px',
-                    backgroundColor: loading ? '#ccc' : '#f44336',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    transition: 'background-color 0.2s'
-                  }}
-                >
-                  🗑️ Eliminar
-                </button>
+              <div className="card-body d-flex flex-column p-3">
+                <h5 className="card-title fw-bold text-truncate" title={producto.nombre}>
+                  {producto.nombre}
+                </h5>
+                <p className="card-text text-muted small flex-grow-1" style={{ 
+                  display: '-webkit-box',
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden'
+                }}>
+                  {producto.descripcion}
+                </p>
+                <div className="d-flex justify-content-between align-items-center mt-3 mb-3">
+                  <span className="h5 mb-0 fw-bold text-success">
+                    ${typeof producto.precio === 'string' 
+                      ? parseFloat(producto.precio.replace(/\./g, '')).toLocaleString('es-AR')
+                      : parseFloat(producto.precio).toLocaleString('es-AR')
+                    }
+                  </span>
+                </div>
+                
+                <div className="d-flex gap-2 mt-auto">
+                  <button
+                    onClick={() => editarProducto(producto)}
+                    disabled={loading}
+                    className="btn btn-outline-primary flex-grow-1 d-flex align-items-center justify-content-center gap-1 btn-sm"
+                  >
+                    <FaEdit /> Editar
+                  </button>
+                  <button
+                    onClick={() => openDeleteModal(producto.id, producto.nombre)}
+                    disabled={loading}
+                    className="btn btn-outline-danger flex-grow-1 d-flex align-items-center justify-content-center gap-1 btn-sm"
+                  >
+                    <FaTrash /> Eliminar
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      {productos.length === 0 && !cargando && (
+        <div className="text-center py-5">
+          <div className="mb-3 text-muted opacity-50">
+            <FaBoxOpen size={64} />
+          </div>
+          <h3 className="text-muted">No hay productos disponibles</h3>
+          <p className="text-muted">Comienza creando uno nuevo con el botón superior.</p>
+        </div>
+      )}
 
       {/* Modal de confirmación de eliminación */}
       <ConfirmModal
@@ -656,6 +560,25 @@ export default function AdminPanel() {
         onContinue={() => setMostrarForm(true)}
         productName={productCreatedModal.productName}
       />
+
+      <style>{`
+        .hover-lift {
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .hover-lift:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label {
+          color: #667eea;
+          transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+        }
+        .form-control:focus {
+          border-color: #667eea;
+          box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+        }
+      `}</style>
     </div>
   );
 }

@@ -65,6 +65,47 @@ function Navbar() {
             MAB Motors
           </Link>
 
+          {/* Cart Icon - Visible always (except admin) */}
+          {!user?.isAdmin && (
+            <div className="d-flex align-items-center order-lg-last ms-auto ms-lg-0 me-3 me-lg-0">
+              <Link 
+                to="/carrito" 
+                className="position-relative text-decoration-none" 
+                onClick={handleLinkClick}
+              >
+                <div 
+                  style={{
+                    padding: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: isActive('/carrito') ? '#e8f5e9' : 'transparent',
+                    transition: 'background-color 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <TiShoppingCart style={{ fontSize: '28px', color: isActive('/carrito') ? '#4CAF50' : '#667eea' }} />
+                </div>
+                {totalItems > 0 && (
+                  <span 
+                    className="position-absolute badge rounded-pill"
+                    style={{
+                      top: '12%',
+                      right: '10%',
+                      backgroundColor: '#4CAF50',
+                      fontSize: '11px',
+                      fontWeight: 'bold',
+                      border: '2px solid white',
+                      transform: 'translate(0%, 0%)'
+                    }}
+                  >
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+            </div>
+          )}
+
           {/* Hamburger Button */}
           <button 
             className="navbar-toggler border-0 shadow-none" 
@@ -167,47 +208,8 @@ function Navbar() {
               )}
             </ul>
 
-            {/* Right Side: Cart and User */}
+            {/* Right Side: User */}
             <div className="d-flex align-items-center gap-3 justify-content-center mt-3 mt-lg-0">
-              {/* Cart Icon - NO visible para admin */}
-              {!user?.isAdmin && (
-                <Link 
-                  to="/carrito" 
-                  className="position-relative text-decoration-none" 
-                  onClick={handleLinkClick}
-                >
-                  <div 
-                    style={{
-                      padding: '8px',
-                      borderRadius: '50%',
-                      backgroundColor: isActive('/carrito') ? '#e8f5e9' : 'transparent',
-                      transition: 'background-color 0.2s',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <TiShoppingCart style={{ fontSize: '28px', color: isActive('/carrito') ? '#4CAF50' : '#667eea' }} />
-                  </div>
-                  {totalItems > 0 && (
-                    <span 
-                      className="position-absolute badge rounded-pill"
-                      style={{
-                        top: '12%',
-                        right: '10%',
-                        backgroundColor: '#4CAF50',
-                        fontSize: '11px',
-                        fontWeight: 'bold',
-                        border: '2px solid white',
-                        transform: 'translate(0%, 0%)'
-                      }}
-                    >
-                      {totalItems}
-                    </span>
-                  )}
-                </Link>
-              )}
-
               {/* User / Login */}
               {user?.isAuthenticated ? (
                 <div className="d-flex align-items-center gap-2">
