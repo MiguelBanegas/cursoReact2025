@@ -36,7 +36,7 @@ export default function Productos() {
   useEffect(() => {
     const cargarProductos = async () => {
       try {
-        const respuesta = await fetch("https://6921d58e512fb4140be183e1.mockapi.io/api/productos");
+        const respuesta = await fetch("https://api.mabcontrol.ar/api/products");
         
         if (!respuesta.ok) {
           throw new Error(`HTTP error! status: ${respuesta.status}`);
