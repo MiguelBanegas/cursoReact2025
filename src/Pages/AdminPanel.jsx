@@ -39,7 +39,7 @@ export default function AdminPanel() {
 
   const cargarProductos = async () => {
     try {
-      const response = await fetch('https://6921d58e512fb4140be183e1.mockapi.io/api/productos');
+      const response = await fetch('https://api.mabcontrol.ar/api/products');
       const data = await response.json();
       setProductos(data);
       setCargando(false);
@@ -182,7 +182,7 @@ export default function AdminPanel() {
         : 0;
       const nuevoId = String(maxId + 1);
       
-      const response = await fetch('https://6921d58e512fb4140be183e1.mockapi.io/api/productos', {
+      const response = await fetch('https://api.mabcontrol.ar/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -216,7 +216,7 @@ export default function AdminPanel() {
     }
     setLoading(true);
     try {
-      const response = await fetch(`https://6921d58e512fb4140be183e1.mockapi.io/api/productos/${editando}`, {
+      const response = await fetch(`https://api.mabcontrol.ar/api/products/${editando}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -242,7 +242,7 @@ export default function AdminPanel() {
   const eliminarProducto = async (id) => {
     setLoading(true);
     try {
-      const response = await fetch(`https://6921d58e512fb4140be183e1.mockapi.io/api/productos/${id}`, {
+      const response = await fetch(`https://api.mabcontrol.ar/api/products/${id}`, {
         method: 'DELETE'
       });
       
