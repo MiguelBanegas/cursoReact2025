@@ -10,7 +10,7 @@ export const useAuth = () => {
   return context;
 };
 
-const API_URL = 'https://6921d58e512fb4140be183e1.mockapi.io/api/usuarios';
+const API_URL = 'https://api.mabcontrol.ar/api/users';
 
 // Función para fetch con timeout
 const fetchWithTimeout = async (url, options = {}, timeout = 15000) => {
