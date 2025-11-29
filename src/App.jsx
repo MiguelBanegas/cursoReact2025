@@ -47,7 +47,7 @@ function AppContent() {
   
   return (
     <CartProvider userEmail={user?.email}>
-      <UpdateNotifier wsUrl="wss://mabcontrol.ar/ws" />
+      {/* <UpdateNotifier wsUrl="wss://mabcontrol.ar/ws" /> */}
       <ScrollToTop />
       <div>
         <Navbar />
