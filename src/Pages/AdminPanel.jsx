@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useToast } from '../context/ToastContext';
 import ConfirmModal from '../components/ConfirmModal';
 import ProductCreatedModal from '../components/ProductCreatedModal';
-import { FaEdit, FaTrash, FaPlus, FaTimes, FaSave, FaImage, FaSearch, FaBoxOpen } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaPlus, FaTimes, FaSave, FaSearch, FaBoxOpen } from 'react-icons/fa';
 
 export default function AdminPanel() {
   const [productos, setProductos] = useState([]);
@@ -84,16 +84,21 @@ export default function AdminPanel() {
         break;
 
       case 'avatar':
-        const imageExtensions = /\.(jpg|jpeg|png|gif|webp)$/i;
-        try {
-          const url = new URL(value);
-          if (!imageExtensions.test(url.pathname)) {
-            newErrors.avatar = 'La URL debe terminar en .jpg, .jpeg, .png, .gif o .webp';
-          } else {
-            delete newErrors.avatar;
+        // Avatar es opcional, solo validar si hay un valor
+        if (value.trim() === '') {
+          delete newErrors.avatar;
+        } else {
+          const imageExtensions = /\.(jpg|jpeg|png|gif|webp)$/i;
+          try {
+            const url = new URL(value);
+            if (!imageExtensions.test(url.pathname)) {
+              newErrors.avatar = 'La URL debe terminar en .jpg, .jpeg, .png, .gif o .webp';
+            } else {
+              delete newErrors.avatar;
+            }
+          } catch {
+            newErrors.avatar = 'Ingresa una URL válida';
           }
-        } catch {
-          newErrors.avatar = 'Ingresa una URL válida';
         }
         break;
 
@@ -137,6 +142,11 @@ export default function AdminPanel() {
     setFormData({ ...formData, avatar: value });
     if (value.length > 0 || errors.avatar) {
       validateField('avatar', value);
+    }
+    // Si el campo está vacío, limpiar preview
+    if (value.trim() === '') {
+      setImagePreview('');
+      return;
     }
     const imageExtensions = /\.(jpg|jpeg|png|gif|webp)$/i;
     try {
@@ -381,13 +391,13 @@ export default function AdminPanel() {
                       type="url"
                       className={`form-control ${errors.avatar ? 'is-invalid' : ''}`}
                       id="avatar"
-                      placeholder="URL de imagen"
+                      placeholder="URL de imagen (opcional)"
                       value={formData.avatar}
                       onChange={(e) => handleImageUrlChange(e.target.value)}
-                      required
                     />
-                    <label htmlFor="avatar">URL de Imagen *</label>
+                    <label htmlFor="avatar">URL de Imagen (opcional)</label>
                     {errors.avatar && <div className="invalid-feedback">{errors.avatar}</div>}
+                    <small className="text-muted">Puedes dejar este campo vacío y agregar la imagen más tarde</small>
                   </div>
                 </div>
 
@@ -473,20 +483,16 @@ export default function AdminPanel() {
         {productos.map(producto => (
           <div key={producto.id} className="col">
             <div className="card h-100 border-0 shadow-sm hover-lift rounded-4 overflow-hidden">
-              <div className="position-relative" style={{ height: '200px', overflow: 'hidden' }}>
+              <div className="position-relative" style={{ height: '200px', overflow: 'hidden', backgroundColor: '#f0f0f0' }}>
                 <img 
-                  src={producto.avatar} 
+                  src={producto.avatar || '/no-image.png'} 
                   alt={producto.nombre}
                   className="w-100 h-100 object-fit-cover"
                   style={{ transition: 'transform 0.3s' }}
                   onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
                   onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  onError={(e) => { e.target.src = '/no-image.png'; }}
                 />
-                <div className="position-absolute top-0 end-0 p-2">
-                  <span className="badge bg-white text-dark shadow-sm rounded-pill">
-                    ID: {producto.id}
-                  </span>
-                </div>
               </div>
               
               <div className="card-body d-flex flex-column p-3">
