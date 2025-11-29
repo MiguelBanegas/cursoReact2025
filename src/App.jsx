@@ -16,6 +16,7 @@ import { ToastProvider } from './context/ToastContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
 import ScrollToTop from './components/ScrollToTop'
+import UpdateNotifier from './components/UpdateNotifier'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
@@ -46,6 +47,7 @@ function AppContent() {
   
   return (
     <CartProvider userEmail={user?.email}>
+      <UpdateNotifier wsUrl="wss://mabcontrol.ar/ws" />
       <ScrollToTop />
       <div>
         <Navbar />
