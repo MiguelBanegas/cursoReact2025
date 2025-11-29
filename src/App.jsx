@@ -1,4 +1,4 @@
-import React from 'react'
+import React , { useEffect }  from 'react'
 import Inicio from './Pages/Inicio'
 import Servicios from './Pages/Servicios'
 import Navbar from './Pages/Navbar'
@@ -23,6 +23,26 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 // Componente interno que tiene acceso al contexto de Auth
 function AppContent() {
   const { user } = useAuth();
+
+   // 🔹 Conexión WebSocket para recarga automática de builds
+  useEffect(() => {
+    const ws = new WebSocket('wss://mabcontrol.ar/ws');
+
+    ws.onopen = () => console.log('Conectado al WebSocket');
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'NEW_BUILD') {
+        console.log('Nuevo build detectado, recargando...');
+        window.location.reload(); // recarga automática
+      }
+    };
+
+    ws.onerror = (err) => console.error('WebSocket error:', err);
+    ws.onclose = () => console.log('WebSocket cerrado');
+
+    return () => ws.close();
+  }, []);
   
   return (
     <CartProvider userEmail={user?.email}>
