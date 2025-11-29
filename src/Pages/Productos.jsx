@@ -229,13 +229,14 @@ export default function Productos() {
             {/* Imagen del producto */}
             <div style={{ position: 'relative', overflow: 'hidden' }}>
               <img 
-                src={producto.avatar} 
+                src={producto.avatar || '/no-image.png'} 
                 alt={producto.nombre}
                 style={{ 
                   width: '100%', 
                   height: '200px', 
                   objectFit: 'cover'
                 }}
+                onError={(e) => { e.target.src = '/no-image.png'; }}
               />
             </div>
             

@@ -48,7 +48,8 @@ const ProductoDetalle = () => {
           <div className="col-lg-6 bg-light d-flex align-items-center justify-content-center p-4">
             <div className="position-relative w-100 h-100 d-flex align-items-center justify-content-center" style={{ minHeight: '400px' }}>
               <img 
-                src={producto.avatar} 
+                src={producto.avatar || '/no-image.png'}
+onError={(e) => { e.target.src = '/no-image.png'; }}
                 alt={producto.nombre}
                 className="img-fluid rounded-3 shadow-sm hover-zoom"
                 style={{ maxHeight: '500px', objectFit: 'contain', transition: 'transform 0.3s ease' }}
