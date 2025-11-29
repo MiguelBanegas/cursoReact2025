@@ -91,20 +91,20 @@ export const AuthProvider = ({ children }) => {
       const token = "token" + usuarioCreado.id;
       
       localStorage.setItem('token', token);
-      localStorage.setItem('userName', usuarioCreado.nombre);
-      localStorage.setItem('userEmail', usuarioCreado.email);
+      localStorage.setItem('userName', nombre); // Usar el parámetro nombre directamente
+      localStorage.setItem('userEmail', email); // Usar el parámetro email directamente
       localStorage.setItem('userId', usuarioCreado.id);
       localStorage.setItem('isAdmin', isAdmin.toString());
       
       setUser({
         id: usuarioCreado.id,
-        nombre: usuarioCreado.nombre,
-        email: usuarioCreado.email,
+        nombre: nombre, // Usar el parámetro nombre directamente
+        email: email, // Usar el parámetro email directamente
         isAuthenticated: true,
         isAdmin: isAdmin
       });
 
-      return { success: true, user: usuarioCreado };
+      return { success: true, user: { id: usuarioCreado.id, nombre, email } };
     } catch (error) {
       return { success: false, error: error.message };
     }
