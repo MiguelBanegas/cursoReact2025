@@ -1,6 +1,6 @@
 // Service Worker para detectar actualizaciones
 // 🔹 IMPORTANTE: Cambia esta versión cada vez que hagas un deploy
-const CACHE_VERSION = "v1.0.1";
+const CACHE_VERSION = "v1.0.2";
 const CACHE_NAME = `mab-motors-${CACHE_VERSION}`;
 
 // Recursos que siempre queremos cachear
