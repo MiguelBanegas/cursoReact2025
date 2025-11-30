@@ -25,29 +25,9 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 function AppContent() {
   const { user } = useAuth();
 
-   // 🔹 Conexión WebSocket para recarga automática de builds
-  useEffect(() => {
-    const ws = new WebSocket('wss://mabcontrol.ar/ws');
-
-    ws.onopen = () => console.log('Conectado al WebSocket');
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'NEW_BUILD') {
-        console.log('Nuevo build detectado, recargando...');
-        window.location.reload(); // recarga automática
-      }
-    };
-
-    ws.onerror = (err) => console.error('WebSocket error:', err);
-    ws.onclose = () => console.log('WebSocket cerrado');
-
-    return () => ws.close();
-  }, []);
-  
   return (
     <CartProvider userEmail={user?.email}>
-      {/* <UpdateNotifier wsUrl="wss://mabcontrol.ar/ws" /> */}
+      <UpdateNotifier />
       <ScrollToTop />
       <div>
         <Navbar />

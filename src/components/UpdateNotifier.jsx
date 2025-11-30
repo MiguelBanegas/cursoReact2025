@@ -1,49 +1,51 @@
 import { useState, useEffect } from 'react';
 
-const RELOAD_DELAY = 5000; // opcional: recarga automática después de X ms
-
-function UpdateNotifier({ wsUrl }) {
-  const [lastUpdate, setLastUpdate] = useState(null);
+function UpdateNotifier() {
   const [showBanner, setShowBanner] = useState(false);
-  const [ws, setWs] = useState(null);
-
-  // Función para inicializar WebSocket y reconexión automática
-  const initWebSocket = () => {
-    const socket = new WebSocket(wsUrl);
-
-    socket.onopen = () => {
-      console.log("✅ Conectado a WebSocket");
-    };
-
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === "NEW_BUILD") {
-        setLastUpdate(data.deployTime);
-        setShowBanner(true);
-
-        // Recarga automática opcional
-        if (RELOAD_DELAY > 0) {
-          setTimeout(() => {
-            window.location.reload();
-          }, RELOAD_DELAY);
-        }
-      }
-    };
-
-    socket.onclose = () => {
-      console.log("⚠️ WebSocket desconectado, reintentando en 3s...");
-      setTimeout(initWebSocket, 3000);
-    };
-
-    setWs(socket);
-  };
+  const [waitingWorker, setWaitingWorker] = useState(null);
 
   useEffect(() => {
-    initWebSocket();
-    return () => ws && ws.close();
+    // Verificar si hay un Service Worker esperando al cargar
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(registration => {
+        // Si ya hay un worker esperando
+        if (registration.waiting) {
+          setWaitingWorker(registration.waiting);
+          setShowBanner(true);
+        }
+
+        // Escuchar nuevas actualizaciones
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              setWaitingWorker(newWorker);
+              setShowBanner(true);
+            }
+          });
+        });
+      });
+
+      // Escuchar evento de cambio de controlador (cuando se actualiza la página)
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          window.location.reload();
+          refreshing = true;
+        }
+      });
+    }
   }, []);
 
-  const handleReload = () => window.location.reload();
+  const handleReload = () => {
+    if (waitingWorker) {
+      // Enviar mensaje al SW para que tome el control
+      waitingWorker.postMessage('SKIP_WAITING');
+    } else {
+      window.location.reload();
+    }
+  };
 
   if (!showBanner) return null;
 
@@ -59,9 +61,17 @@ function UpdateNotifier({ wsUrl }) {
       zIndex: 9999,
       boxShadow: '0px 2px 5px rgba(0,0,0,0.2)'
     }}>
-      La página se actualizó el {new Date(lastUpdate).toLocaleString()}.
-      <button onClick={handleReload} style={{ marginLeft: '10px', cursor: 'pointer' }}>
-        Recargar
+      🚀 Hay una nueva versión disponible.
+      <button onClick={handleReload} style={{ 
+        marginLeft: '10px', 
+        cursor: 'pointer',
+        padding: '5px 15px',
+        border: 'none',
+        borderRadius: '4px',
+        background: '#333',
+        color: 'white'
+      }}>
+        Actualizar ahora
       </button>
     </div>
   );
