@@ -128,8 +128,8 @@ export default function Login() {
         if (result.success) {
           showToast(`¡Bienvenido ${result.user.nombre}!`, 'success');
           
-          // Redirigir según el tipo de usuario
-          if (email === '1234@admin.com') {
+          // Redirigir según el rol del usuario
+          if (result.user.role === 'admin') {
             navigate('/admin');
           } else {
             navigate('/productos');
@@ -144,8 +144,8 @@ export default function Login() {
         if (result.success) {
           showToast(`¡Registro exitoso! Bienvenido ${result.user.nombre}!`, 'success');
           
-          // Redirigir según el tipo de usuario
-          if (email === '1234@admin.com') {
+          // Redirigir según el rol del usuario
+          if (result.user.role === 'admin') {
             navigate('/admin');
           } else {
             navigate('/productos');

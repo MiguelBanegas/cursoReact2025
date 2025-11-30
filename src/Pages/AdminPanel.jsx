@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useToast } from '../context/ToastContext';
 import ConfirmModal from '../components/ConfirmModal';
 import ProductCreatedModal from '../components/ProductCreatedModal';
-import { FaEdit, FaTrash, FaPlus, FaTimes, FaSave, FaSearch, FaBoxOpen, FaImage, FaCloudUploadAlt } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaPlus, FaTimes, FaSave, FaSearch, FaBoxOpen, FaImage, FaCloudUploadAlt, FaUsers, FaUserShield, FaUser } from 'react-icons/fa';
 
 export default function AdminPanel() {
   const [productos, setProductos] = useState([]);
@@ -22,6 +22,12 @@ export default function AdminPanel() {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [useUrlInput, setUseUrlInput] = useState(false);
+
+  // Estados para gestión de usuarios
+  const [activeTab, setActiveTab] = useState('productos'); // 'productos' o 'usuarios'
+  const [usuarios, setUsuarios] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [modalConfigUser, setModalConfigUser] = useState({ isOpen: false, onConfirm: null, userName: '', action: '' });
 
   // Form state
   const [formData, setFormData] = useState({
@@ -253,6 +259,80 @@ export default function AdminPanel() {
 
   // ========== FIN NUEVAS FUNCIONES ==========
 
+  // ========== FUNCIONES DE GESTIÓN DE USUARIOS ==========
+
+  const cargarUsuarios = async () => {
+    setLoadingUsers(true);
+    try {
+      const response = await fetch('https://api.mabcontrol.ar/api/users');
+      const data = await response.json();
+      setUsuarios(data);
+    } catch (error) {
+      showToast('Error al cargar usuarios', 'error');
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
+  const actualizarRol = async (userId, nuevoRol) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`https://api.mabcontrol.ar/api/users/${userId}/role`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: nuevoRol })
+      });
+
+      if (await handleApiError(response, 'Error al actualizar rol')) {
+        showToast('Rol actualizado exitosamente', 'success');
+        cargarUsuarios(); // Recargar lista
+      }
+    } catch (error) {
+      showToast('Error de conexión. Verifica tu internet', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const eliminarUsuario = async (userId) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`https://api.mabcontrol.ar/api/users/${userId}`, {
+        method: 'DELETE'
+      });
+
+      if (await handleApiError(response, 'Error al eliminar usuario')) {
+        showToast('Usuario eliminado exitosamente', 'success');
+        cargarUsuarios(); // Recargar lista
+      }
+    } catch (error) {
+      showToast('Error de conexión. Verifica tu internet', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openUserModal = (userId, userName, action, newRole = null) => {
+    setModalConfigUser({
+      isOpen: true,
+      onConfirm: () => {
+        if (action === 'delete') {
+          eliminarUsuario(userId);
+        } else if (action === 'role') {
+          actualizarRol(userId, newRole);
+        }
+      },
+      userName: userName,
+      action: action
+    });
+  };
+
+  const closeModalUser = () => {
+    setModalConfigUser({ isOpen: false, onConfirm: null, userName: '', action: '' });
+  };
+
+  // ========== FIN FUNCIONES DE GESTIÓN DE USUARIOS ==========
+
 
   // Manejo de errores HTTP
   const handleApiError = async (response, defaultMessage) => {
@@ -417,8 +497,46 @@ export default function AdminPanel() {
         }}>
           <span className="me-2">🔧</span> Panel de Administración
         </h1>
-        
-        {!mostrarForm && (
+      </div>
+
+      {/* Tabs de navegación */}
+      <ul className="nav nav-tabs mb-4">
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === 'productos' ? 'active' : ''}`}
+            onClick={() => setActiveTab('productos')}
+            style={{ 
+              cursor: 'pointer',
+              border: 'none',
+              background: activeTab === 'productos' ? 'white' : 'transparent'
+            }}
+          >
+            <FaBoxOpen className="me-2" />
+            Productos
+          </button>
+        </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === 'usuarios' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveTab('usuarios');
+              cargarUsuarios();
+            }}
+            style={{ 
+              cursor: 'pointer',
+              border: 'none',
+              background: activeTab === 'usuarios' ? 'white' : 'transparent'
+            }}
+          >
+            <FaUsers className="me-2" />
+            Usuarios
+          </button>
+        </li>
+      </ul>
+
+      {/* Botón Nuevo Producto (solo en tab productos) */}
+      {activeTab === 'productos' && !mostrarForm && (
+        <div className="d-flex justify-content-end mb-4">
           <button 
             onClick={() => setMostrarForm(true)}
             className="btn btn-success d-flex align-items-center gap-2 shadow-sm rounded-pill px-4"
@@ -426,8 +544,12 @@ export default function AdminPanel() {
           >
             <FaPlus /> Nuevo Producto
           </button>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* CONTENIDO SEGÚN TAB ACTIVO */}
+      {activeTab === 'productos' && (
+        <>
 
       {/* FORMULARIO */}
       {mostrarForm && (
@@ -765,6 +887,111 @@ export default function AdminPanel() {
           box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
         }
       `}</style>
+        </>
+      )}
+
+      {/* TAB DE USUARIOS */}
+      {activeTab === 'usuarios' && (
+        <div className="card border-0 shadow-sm rounded-4">
+          <div className="card-body p-4">
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h3 className="mb-0 fw-bold">
+                <FaUsers className="me-2" />
+                Gestión de Usuarios
+              </h3>
+              <span className="badge bg-primary rounded-pill">
+                {usuarios.length} usuarios
+              </span>
+            </div>
+
+            {loadingUsers ? (
+              <div className="text-center py-5">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Cargando...</span>
+                </div>
+                <p className="text-muted mt-3">Cargando usuarios...</p>
+              </div>
+            ) : usuarios.length === 0 ? (
+              <div className="text-center py-5">
+                <FaUsers size={64} className="text-muted opacity-50 mb-3" />
+                <h4 className="text-muted">No hay usuarios registrados</h4>
+              </div>
+            ) : (
+              <div className="table-responsive">
+                <table className="table table-hover align-middle">
+                  <thead className="table-light">
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Email</th>
+                      <th>Rol</th>
+                      <th className="text-center">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {usuarios.map(usuario => (
+                      <tr key={usuario.id}>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            {usuario.role === 'admin' ? (
+                              <FaUserShield className="text-danger me-2" />
+                            ) : (
+                              <FaUser className="text-secondary me-2" />
+                            )}
+                            <strong>{usuario.nombre}</strong>
+                          </div>
+                        </td>
+                        <td className="text-muted">{usuario.email}</td>
+                        <td>
+                          <select
+                            className={`form-select form-select-sm ${
+                              usuario.role === 'admin' ? 'border-danger text-danger' : 'border-secondary'
+                            }`}
+                            value={usuario.role || 'user'}
+                            onChange={(e) => {
+                              const newRole = e.target.value;
+                              openUserModal(usuario.id, usuario.nombre, 'role', newRole);
+                            }}
+                            disabled={loading}
+                            style={{ width: '140px' }}
+                          >
+                            <option value="user">👤 Usuario</option>
+                            <option value="admin">🛡️ Admin</option>
+                          </select>
+                        </td>
+                        <td className="text-center">
+                          <button
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => openUserModal(usuario.id, usuario.nombre, 'delete')}
+                            disabled={loading}
+                            title="Eliminar usuario"
+                          >
+                            <FaTrash />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmación para usuarios */}
+      <ConfirmModal
+        isOpen={modalConfigUser.isOpen}
+        onClose={closeModalUser}
+        onConfirm={modalConfigUser.onConfirm}
+        title={modalConfigUser.action === 'delete' ? 'Confirmar Eliminación' : 'Confirmar Cambio de Rol'}
+        message={
+          modalConfigUser.action === 'delete'
+            ? `¿Estás seguro de que deseas eliminar al usuario "${modalConfigUser.userName}"? Esta acción no se puede deshacer.`
+            : `¿Estás seguro de que deseas cambiar el rol del usuario "${modalConfigUser.userName}"?`
+        }
+        confirmText={modalConfigUser.action === 'delete' ? 'Eliminar' : 'Cambiar Rol'}
+        cancelText="Cancelar"
+      />
     </div>
   );
 }

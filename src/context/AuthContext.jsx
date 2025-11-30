@@ -86,8 +86,13 @@ export const AuthProvider = ({ children }) => {
 
       const usuarioCreado = await createResponse.json();
 
+      // Obtener datos completos del usuario creado (incluyendo rol)
+      const getUserResponse = await fetchWithTimeout(API_URL);
+      const usuariosCompletos = await getUserResponse.json();
+      const usuarioCompleto = usuariosCompletos.find(u => u.id === usuarioCreado.id);
+
       // Iniciar sesión automáticamente después del registro
-      const isAdmin = email === '1234@admin.com';
+      const isAdmin = usuarioCompleto?.role === 'admin'; // ← Leer rol desde Firestore
       const token = "token" + usuarioCreado.id;
       
       localStorage.setItem('token', token);
@@ -130,8 +135,8 @@ export const AuthProvider = ({ children }) => {
         throw new Error('Email o contraseña incorrectos');
       }
 
-      // Verificar si es admin
-      const isAdmin = email === '1234@admin.com';
+      // Verificar si es admin (leer desde Firestore)
+      const isAdmin = usuario.role === 'admin'; // ← Leer rol desde Firestore
       const token = "token" + usuario.id;
       
       // Guardar en localStorage
