@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useToast } from '../context/ToastContext';
 import ConfirmModal from '../components/ConfirmModal';
 import ProductCreatedModal from '../components/ProductCreatedModal';
-import { FaEdit, FaTrash, FaPlus, FaTimes, FaSave, FaSearch, FaBoxOpen } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaPlus, FaTimes, FaSave, FaSearch, FaBoxOpen, FaImage, FaCloudUploadAlt } from 'react-icons/fa';
 
 export default function AdminPanel() {
   const [productos, setProductos] = useState([]);
@@ -16,6 +16,12 @@ export default function AdminPanel() {
   const [productCreatedModal, setProductCreatedModal] = useState({ isOpen: false, productName: '' });
   const { showToast } = useToast();
   const nombreInputRef = useRef(null);
+  
+  // Estados para manejo de archivos
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const [useUrlInput, setUseUrlInput] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -161,6 +167,93 @@ export default function AdminPanel() {
     }
   };
 
+  // ========== NUEVAS FUNCIONES PARA UPLOAD DE IMÁGENES ==========
+  
+  // Función para subir imagen al backend
+  const uploadImage = async (file) => {
+    setUploadingImage(true);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('image', file);
+
+      const response = await fetch('https://api.mabcontrol.ar/api/products/upload-image', {
+        method: 'POST',
+        body: formDataUpload
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al subir la imagen');
+      }
+
+      const data = await response.json();
+      
+      // Actualizar el campo avatar con la URL generada
+      setFormData({ ...formData, avatar: data.imageUrl });
+      setImagePreview(data.imageUrl);
+      showToast('Imagen subida exitosamente', 'success');
+      
+      return data.imageUrl;
+    } catch (error) {
+      showToast('Error al subir la imagen', 'error');
+      console.error(error);
+      return null;
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  // Manejadores de drag & drop
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      handleFileSelect(file);
+    }
+  };
+
+  const handleFileSelect = async (file) => {
+    // Validar tipo de archivo
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      showToast('Solo se permiten imágenes (JPG, PNG, GIF, WEBP)', 'error');
+      return;
+    }
+
+    // Validar tamaño (5MB máximo)
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('La imagen no debe superar 5MB', 'error');
+      return;
+    }
+
+    setSelectedFile(file);
+    
+    // Preview local
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+
+    // Subir automáticamente
+    await uploadImage(file);
+  };
+
+  // ========== FIN NUEVAS FUNCIONES ==========
+
+
   // Manejo de errores HTTP
   const handleApiError = async (response, defaultMessage) => {
     if (!response.ok) {
@@ -286,6 +379,10 @@ export default function AdminPanel() {
     setMostrarForm(false);
     setErrors({});
     setImagePreview('');
+    setSelectedFile(null);
+    setUploadingImage(false);
+    setDragActive(false);
+    setUseUrlInput(false);
   };
 
   const openDeleteModal = (id, nombre) => {
@@ -386,18 +483,118 @@ export default function AdminPanel() {
                     {errors.precio && <div className="invalid-feedback">{errors.precio}</div>}
                   </div>
 
-                  <div className="form-floating mb-3">
-                    <input
-                      type="url"
-                      className={`form-control ${errors.avatar ? 'is-invalid' : ''}`}
-                      id="avatar"
-                      placeholder="URL de imagen (opcional)"
-                      value={formData.avatar}
-                      onChange={(e) => handleImageUrlChange(e.target.value)}
-                    />
-                    <label htmlFor="avatar">URL de Imagen (opcional)</label>
-                    {errors.avatar && <div className="invalid-feedback">{errors.avatar}</div>}
-                    <small className="text-muted">Puedes dejar este campo vacío y agregar la imagen más tarde</small>
+                  {/* Zona de Drag & Drop para imagen */}
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">
+                      <FaImage className="me-2" />
+                      Imagen del Producto
+                    </label>
+                    
+                    <div
+                      className={`border-2 border-dashed rounded-3 p-4 text-center position-relative ${
+                        dragActive ? 'border-primary bg-light' : 'border-secondary'
+                      }`}
+                      style={{ 
+                        transition: 'all 0.3s',
+                        minHeight: '200px',
+                        cursor: uploadingImage ? 'wait' : 'pointer'
+                      }}
+                      onDragEnter={handleDrag}
+                      onDragLeave={handleDrag}
+                      onDragOver={handleDrag}
+                      onDrop={handleDrop}
+                      onClick={() => !uploadingImage && document.getElementById('imageInput').click()}
+                    >
+                      {imagePreview ? (
+                        <div className="position-relative">
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            className="img-fluid rounded shadow-sm mb-2"
+                            style={{ maxHeight: '150px', objectFit: 'contain' }}
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-danger position-absolute top-0 end-0"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setImagePreview('');
+                              setFormData({ ...formData, avatar: '' });
+                              setSelectedFile(null);
+                            }}
+                            disabled={uploadingImage}
+                          >
+                            <FaTimes />
+                          </button>
+                          <p className="text-muted small mb-0 mt-2">Click para cambiar imagen</p>
+                        </div>
+                      ) : (
+                        <div>
+                          <FaCloudUploadAlt size={48} className="text-muted mb-3" />
+                          {uploadingImage ? (
+                            <>
+                              <div className="spinner-border text-primary mb-2" role="status">
+                                <span className="visually-hidden">Subiendo...</span>
+                              </div>
+                              <p className="mb-0 text-primary">Subiendo imagen...</p>
+                            </>
+                          ) : (
+                            <>
+                              <p className="mb-2 fw-bold">Arrastra una imagen aquí</p>
+                              <p className="text-muted small mb-0">o haz click para seleccionar</p>
+                            </>
+                          )}
+                        </div>
+                      )}
+                      
+                      <input
+                        type="file"
+                        id="imageInput"
+                        className="d-none"
+                        accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            handleFileSelect(e.target.files[0]);
+                          }
+                        }}
+                        disabled={uploadingImage}
+                      />
+                    </div>
+                    
+                    <p className="text-muted small mt-2 mb-2">
+                      Formatos: JPG, PNG, GIF, WEBP (máx. 5MB)
+                    </p>
+
+                    {/* Opción alternativa: URL manual */}
+                    <div className="mt-3">
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="useUrlInstead"
+                          checked={useUrlInput}
+                          onChange={(e) => setUseUrlInput(e.target.checked)}
+                        />
+                        <label className="form-check-label text-muted small" htmlFor="useUrlInstead">
+                          O usar URL de imagen externa
+                        </label>
+                      </div>
+                      
+                      {useUrlInput && (
+                        <div className="form-floating mt-2">
+                          <input
+                            type="url"
+                            className={`form-control form-control-sm ${errors.avatar ? 'is-invalid' : ''}`}
+                            id="avatarUrl"
+                            placeholder="https://ejemplo.com/imagen.jpg"
+                            value={formData.avatar}
+                            onChange={(e) => handleImageUrlChange(e.target.value)}
+                          />
+                          <label htmlFor="avatarUrl">URL de Imagen</label>
+                          {errors.avatar && <div className="invalid-feedback">{errors.avatar}</div>}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -425,23 +622,6 @@ export default function AdminPanel() {
                   </div>
                 </div>
               </div>
-
-              {/* Preview de imagen */}
-              {imagePreview && !errors.avatar && (
-                <div className="mb-4 p-3 bg-light rounded-3 text-center">
-                  <p className="text-muted small mb-2">Vista previa de la imagen</p>
-                  <img 
-                    src={imagePreview} 
-                    alt="Preview"
-                    className="img-fluid rounded shadow-sm"
-                    style={{ maxHeight: '200px', objectFit: 'contain' }}
-                    onError={() => {
-                      setImagePreview('');
-                      setErrors({ ...errors, avatar: 'No se pudo cargar la imagen' });
-                    }}
-                  />
-                </div>
-              )}
 
               <div className="d-flex gap-2 justify-content-end mt-4">
                 <button 
