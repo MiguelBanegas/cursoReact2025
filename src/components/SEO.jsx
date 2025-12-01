@@ -1,18 +1,12 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Title, Meta, Link } from 'react-head';
 import { seoConfig } from '../config/seo.config';
 
 /**
- * Componente SEO reutilizable para gestionar meta tags
- * @param {string} title - Título de la página
- * @param {string} description - Descripción meta
- * @param {string} keywords - Palabras clave (opcional)
- * @param {string} image - URL de imagen para Open Graph (opcional)
- * @param {string} url - URL canónica (opcional)
- * @param {string} type - Tipo de contenido: website, article, product (default: website)
- * @param {boolean} noIndex - Si true, añade noindex/nofollow (default: false)
- */
-const SEO = ({
+
+* Componente SEO para gestionar meta tags
+  */
+  const SEO = ({
   title,
   description,
   keywords,
@@ -20,63 +14,62 @@ const SEO = ({
   url,
   type = 'website',
   noIndex = false,
-}) => {
-  // Construir título completo
-  const fullTitle = title ? `${title} | ${seoConfig.siteName}` : seoConfig.siteName;
-  
-  // Usar descripción por defecto si no se proporciona
-  const metaDescription = description || seoConfig.siteDescription;
-  
-  // Combinar keywords personalizadas con las por defecto
-  const metaKeywords = keywords 
-    ? [...seoConfig.defaultKeywords, ...keywords.split(',').map(k => k.trim())]
-    : seoConfig.defaultKeywords;
-  
-  // Imagen para Open Graph
-  const ogImage = image 
-    ? (image.startsWith('http') ? image : `${seoConfig.siteUrl}${image}`)
-    : `${seoConfig.siteUrl}${seoConfig.defaultImage}`;
-  
-  // URL canónica
-  const canonicalUrl = url || seoConfig.siteUrl;
+  }) => {
+  const fullTitle = title
+  ? `${title} | ${seoConfig.siteName}`
+  : seoConfig.siteName;
 
-  return (
-    <Helmet>
-      {/* Título de la página */}
-      <title>{fullTitle}</title>
-      
-      {/* Meta tags básicos */}
-      <meta name="description" content={metaDescription} />
-      <meta name="keywords" content={metaKeywords.join(', ')} />
-      
-      {/* Control de indexación */}
-      {noIndex && <meta name="robots" content="noindex, nofollow" />}
-      
-      {/* URL canónica */}
-      <link rel="canonical" href={canonicalUrl} />
-      
-      {/* Open Graph para Facebook/LinkedIn */}
-      <meta property="og:type" content={type} />
-      <meta property="og:title" content={fullTitle} />
-      <meta property="og:description" content={metaDescription} />
-      <meta property="og:image" content={ogImage} />
-      <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:site_name" content={seoConfig.siteName} />
-      <meta property="og:locale" content={seoConfig.locale} />
-      
-      {/* Twitter Card */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={fullTitle} />
-      <meta name="twitter:description" content={metaDescription} />
-      <meta name="twitter:image" content={ogImage} />
-      {seoConfig.social.twitter && (
-        <meta name="twitter:site" content={seoConfig.social.twitter} />
-      )}
-      
-      {/* Idioma */}
-      <html lang={seoConfig.language} />
-    </Helmet>
-  );
+const metaDescription = description || seoConfig.siteDescription;
+
+const metaKeywords = keywords
+? [...seoConfig.defaultKeywords, ...keywords.split(',').map(k => k.trim())]
+: seoConfig.defaultKeywords;
+
+const ogImage = image
+? (image.startsWith('http') ? image : `${seoConfig.siteUrl}${image}`)
+: `${seoConfig.siteUrl}${seoConfig.defaultImage}`;
+
+const canonicalUrl = url || seoConfig.siteUrl;
+
+return (
+<>
+{/* Título */} <Title>{fullTitle}</Title>
+
+```
+  {/* Meta básicas */}
+  <Meta name="description" content={metaDescription} />
+  <Meta name="keywords" content={metaKeywords.join(', ')} />
+
+  {/* Control indexación */}
+  {noIndex && <Meta name="robots" content="noindex, nofollow" />}
+
+  {/* Canonical */}
+  <Link rel="canonical" href={canonicalUrl} />
+
+  {/* Open Graph */}
+  <Meta property="og:type" content={type} />
+  <Meta property="og:title" content={fullTitle} />
+  <Meta property="og:description" content={metaDescription} />
+  <Meta property="og:image" content={ogImage} />
+  <Meta property="og:url" content={canonicalUrl} />
+  <Meta property="og:site_name" content={seoConfig.siteName} />
+  <Meta property="og:locale" content={seoConfig.locale} />
+
+  {/* Twitter */}
+  <Meta name="twitter:card" content="summary_large_image" />
+  <Meta name="twitter:title" content={fullTitle} />
+  <Meta name="twitter:description" content={metaDescription} />
+  <Meta name="twitter:image" content={ogImage} />
+  {seoConfig.social.twitter && (
+    <Meta name="twitter:site" content={seoConfig.social.twitter} />
+  )}
+
+  {/* Idioma */}
+  <html lang={seoConfig.language} />
+</>
+
+
+);
 };
 
 export default SEO;

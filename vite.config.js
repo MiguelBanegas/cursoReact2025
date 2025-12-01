@@ -15,7 +15,7 @@ export default defineConfig({
           // Bootstrap
           bootstrap: ["bootstrap"],
           // React Helmet
-          helmet: ["react-helmet-async"],
+          helmet: ["react-head"],
         },
       },
     },
