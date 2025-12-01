@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- Página principal -->
+  <url>
+    <loc>https://ecommerce.mabcontrol.ar/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Productos -->
+  <url>
+    <loc>https://ecommerce.mabcontrol.ar/productos</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Servicios -->
+  <url>
+    <loc>https://ecommerce.mabcontrol.ar/servicios</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Detalle de producto (si querés agregar IDs) -->
+  <!--
+  <url>
+    <loc>https://ecommerce.mabcontrol.ar/detalle/1</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  -->
+
+  <!-- Carrito -->
+  <url>
+    <loc>https://ecommerce.mabcontrol.ar/carrito</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Checkout público (si lo usás así) -->
+  <url>
+    <loc>https://ecommerce.mabcontrol.ar/checkout</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

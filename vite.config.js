@@ -12,8 +12,8 @@ export default defineConfig({
         manualChunks: {
           // Separate React libraries
           "react-vendor": ["react", "react-dom", "react-router-dom"],
-          // Bootstrap
-          bootstrap: ["bootstrap"],
+          
+          
         },
       },
     },

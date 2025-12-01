@@ -8,8 +8,6 @@ import AdminRoute from './components/AdminRoute'
 import ScrollToTop from './components/ScrollToTop'
 import UpdateNotifier from './components/UpdateNotifier'
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 // Lazy load all page components for code splitting
 const Inicio = lazy(() => import('./Pages/Inicio'))
@@ -65,13 +63,14 @@ function AppContent() {
       <UpdateNotifier />
       <ScrollToTop />
       <Suspense fallback={<LoadingFallback />}>
-        <div>
+        
           <Navbar />
           <Routes>
+            
             <Route path='/' element={<Inicio />} />
             <Route path='/servicios' element={<Servicios />} />
             <Route path='/productos' element={<Productos />} />
-            <Route path='/productos/:id/:nombre' element={<ProductoDetalle />} />
+            <Route path='/productos/:id' element={<ProductoDetalle />} />
             <Route path='/carrito' element={<CarritoPage />} />
             <Route path='/login' element={<Login />} />
             <Route path='/checkout' element={
@@ -84,9 +83,10 @@ function AppContent() {
                 <AdminPanel />
               </AdminRoute>
             } />
+            <Route path="*" element={<Inicio />} />
           </Routes>
           <Footer />
-        </div>
+        
       </Suspense>
     </CartProvider>
   );
