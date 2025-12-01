@@ -70,7 +70,7 @@ function AppContent() {
             <Route path='/' element={<Inicio />} />
             <Route path='/servicios' element={<Servicios />} />
             <Route path='/productos' element={<Productos />} />
-            <Route path='/productos/:id' element={<ProductoDetalle />} />
+            <Route path='/productos/:id/:nombre' element={<ProductoDetalle />} />
             <Route path='/carrito' element={<CarritoPage />} />
             <Route path='/login' element={<Login />} />
             <Route path='/checkout' element={
