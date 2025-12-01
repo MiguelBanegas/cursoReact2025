@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useToast } from '../context/ToastContext';
 import ConfirmModal from '../components/ConfirmModal';
 import ProductCreatedModal from '../components/ProductCreatedModal';
-import { FaEdit, FaTrash, FaPlus, FaTimes, FaSave, FaSearch, FaBoxOpen, FaImage, FaCloudUploadAlt, FaUsers, FaUserShield, FaUser } from 'react-icons/fa';
+import { EditIcon, TrashIcon, PlusIcon, TimesIcon, SaveIcon, SearchIcon, BoxIcon, ImageIcon, CloudUploadIcon, UsersIcon, UserShieldIcon, UserIcon } from '../components/Icons';
 
 export default function AdminPanel() {
   const [productos, setProductos] = useState([]);
@@ -511,7 +511,7 @@ export default function AdminPanel() {
               background: activeTab === 'productos' ? 'white' : 'transparent'
             }}
           >
-            <FaBoxOpen className="me-2" />
+            <BoxIcon className="me-2" />
             Productos
           </button>
         </li>
@@ -528,7 +528,7 @@ export default function AdminPanel() {
               background: activeTab === 'usuarios' ? 'white' : 'transparent'
             }}
           >
-            <FaUsers className="me-2" />
+            <UsersIcon className="me-2" />
             Usuarios
           </button>
         </li>
@@ -542,7 +542,7 @@ export default function AdminPanel() {
             className="btn btn-success d-flex align-items-center gap-2 shadow-sm rounded-pill px-4"
             style={{ transition: 'all 0.3s' }}
           >
-            <FaPlus /> Nuevo Producto
+            <PlusIcon /> Nuevo Producto
           </button>
         </div>
       )}
@@ -556,14 +556,14 @@ export default function AdminPanel() {
         <div className="card border-0 shadow-lg rounded-4 mb-5 animate__animated animate__fadeIn">
           <div className="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
             <h3 className="mb-0 fw-bold text-secondary">
-              {editando ? <><FaEdit className="me-2"/>Editar Producto</> : <><FaPlus className="me-2"/>Crear Producto</>}
+              {editando ? <><EditIcon className="me-2"/>Editar Producto</> : <><PlusIcon className="me-2"/>Crear Producto</>}
             </h3>
             <button 
               onClick={resetForm}
               className="btn btn-light rounded-circle p-2"
               title="Cerrar formulario"
             >
-              <FaTimes />
+              <TimesIcon />
             </button>
           </div>
           <div className="card-body p-4">
@@ -608,7 +608,7 @@ export default function AdminPanel() {
                   {/* Zona de Drag & Drop para imagen */}
                   <div className="mb-3">
                     <label className="form-label fw-bold">
-                      <FaImage className="me-2" />
+                      <ImageIcon className="me-2" />
                       Imagen del Producto
                     </label>
                     
@@ -646,13 +646,13 @@ export default function AdminPanel() {
                             }}
                             disabled={uploadingImage}
                           >
-                            <FaTimes />
+                            <TimesIcon />
                           </button>
                           <p className="text-muted small mb-0 mt-2">Click para cambiar imagen</p>
                         </div>
                       ) : (
                         <div>
-                          <FaCloudUploadAlt size={48} className="text-muted mb-3" />
+                          <CloudUploadIcon size={48} className="text-muted mb-3" />
                           {uploadingImage ? (
                             <>
                               <div className="spinner-border text-primary mb-2" role="status">
@@ -770,7 +770,7 @@ export default function AdminPanel() {
                     </>
                   ) : (
                     <>
-                      <FaSave /> {editando ? 'Actualizar Producto' : 'Guardar Producto'}
+                      <SaveIcon /> {editando ? 'Actualizar Producto' : 'Guardar Producto'}
                     </>
                   )}
                 </button>
@@ -824,14 +824,14 @@ export default function AdminPanel() {
                     disabled={loading}
                     className="btn btn-outline-primary flex-grow-1 d-flex align-items-center justify-content-center gap-1 btn-sm"
                   >
-                    <FaEdit /> Editar
+                    <EditIcon /> Editar
                   </button>
                   <button
                     onClick={() => openDeleteModal(producto.id, producto.nombre)}
                     disabled={loading}
                     className="btn btn-outline-danger flex-grow-1 d-flex align-items-center justify-content-center gap-1 btn-sm"
                   >
-                    <FaTrash /> Eliminar
+                    <TrashIcon /> Eliminar
                   </button>
                 </div>
               </div>
@@ -843,7 +843,7 @@ export default function AdminPanel() {
       {productos.length === 0 && !cargando && (
         <div className="text-center py-5">
           <div className="mb-3 text-muted opacity-50">
-            <FaBoxOpen size={64} />
+            <BoxIcon size={64} />
           </div>
           <h3 className="text-muted">No hay productos disponibles</h3>
           <p className="text-muted">Comienza creando uno nuevo con el botón superior.</p>
@@ -896,7 +896,7 @@ export default function AdminPanel() {
           <div className="card-body p-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h3 className="mb-0 fw-bold">
-                <FaUsers className="me-2" />
+                <UsersIcon className="me-2" />
                 Gestión de Usuarios
               </h3>
               <span className="badge bg-primary rounded-pill">
@@ -913,7 +913,7 @@ export default function AdminPanel() {
               </div>
             ) : usuarios.length === 0 ? (
               <div className="text-center py-5">
-                <FaUsers size={64} className="text-muted opacity-50 mb-3" />
+                <UsersIcon size={64} className="text-muted opacity-50 mb-3" />
                 <h4 className="text-muted">No hay usuarios registrados</h4>
               </div>
             ) : (
@@ -933,9 +933,9 @@ export default function AdminPanel() {
                         <td>
                           <div className="d-flex align-items-center">
                             {usuario.role === 'admin' ? (
-                              <FaUserShield className="text-danger me-2" />
+                              <UserShieldIcon className="text-danger me-2" />
                             ) : (
-                              <FaUser className="text-secondary me-2" />
+                              <UserIcon className="text-secondary me-2" />
                             )}
                             <strong>{usuario.nombre}</strong>
                           </div>
@@ -965,7 +965,7 @@ export default function AdminPanel() {
                             disabled={loading}
                             title="Eliminar usuario"
                           >
-                            <FaTrash />
+                            <TrashIcon />
                           </button>
                         </td>
                       </tr>

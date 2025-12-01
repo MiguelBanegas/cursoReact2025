@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { FaWhatsapp, FaFacebook, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa'
-import { MdEmail, MdLocationOn, MdPhone } from 'react-icons/md'
+import { WhatsAppIcon, FacebookIcon, TwitterIcon, InstagramIcon, YouTubeIcon, EmailIcon, LocationIcon, PhoneIcon } from '../components/Icons'
 
 function Footer() {
   return (
@@ -50,23 +49,23 @@ function Footer() {
             <h5 className="text-uppercase mb-3 fw-bold" style={{ color: '#4CAF50' }}>Contacto</h5>
             <ul className="list-unstyled">
               <li className="mb-2 d-flex align-items-start">
-                <MdLocationOn className="me-2 mt-1 flex-shrink-0" style={{ color: '#4CAF50' }} />
+                <LocationIcon className="me-2 mt-1 flex-shrink-0" style={{ color: '#4CAF50' }} />
                 <span className="text-secondary small">Av. Siempre Viva 123, Springfield</span>
               </li>
               <li className="mb-2 d-flex align-items-center">
-                <MdEmail className="me-2 flex-shrink-0" style={{ color: '#4CAF50' }} />
+                <EmailIcon className="me-2 flex-shrink-0" style={{ color: '#4CAF50' }} />
                 <a href="mailto:contacto@mabmotors.com" className="text-secondary text-decoration-none small hover-effect">
                   contacto@mabmotors.com
                 </a>
               </li>
               <li className="mb-2 d-flex align-items-center">
-                <MdPhone className="me-2 flex-shrink-0" style={{ color: '#4CAF50' }} />
+                <PhoneIcon className="me-2 flex-shrink-0" style={{ color: '#4CAF50' }} />
                 <a href="tel:+541112345678" className="text-secondary text-decoration-none small hover-effect">
                   +54 11 1234-5678
                 </a>
               </li>
               <li className="mb-2 d-flex align-items-center">
-                <FaWhatsapp className="me-2 flex-shrink-0" style={{ color: '#4CAF50' }} />
+                <WhatsAppIcon className="me-2 flex-shrink-0" style={{ color: '#4CAF50' }} />
                 <a href="https://wa.me/5491112345678" target="_blank" rel="noopener noreferrer" className="text-secondary text-decoration-none small hover-effect">
                   +54 9 11 1234-5678
                 </a>
@@ -85,7 +84,7 @@ function Footer() {
                 className="text-light fs-4 hover-scale"
                 aria-label="Facebook"
               >
-                <FaFacebook />
+                <FacebookIcon />
               </a>
               <a 
                 href="https://instagram.com" 
@@ -94,7 +93,7 @@ function Footer() {
                 className="text-light fs-4 hover-scale"
                 aria-label="Instagram"
               >
-                <FaInstagram />
+                <InstagramIcon />
               </a>
               <a 
                 href="https://twitter.com" 
@@ -103,7 +102,7 @@ function Footer() {
                 className="text-light fs-4 hover-scale"
                 aria-label="Twitter"
               >
-                <FaTwitter />
+                <TwitterIcon />
               </a>
               <a 
                 href="https://youtube.com" 
@@ -112,7 +111,7 @@ function Footer() {
                 className="text-light fs-4 hover-scale"
                 aria-label="YouTube"
               >
-                <FaYoutube />
+                <YouTubeIcon />
               </a>
             </div>
             <p className="text-secondary small mt-3 mb-0">

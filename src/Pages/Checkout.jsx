@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
-import { FaFileInvoice, FaCheckCircle, FaUser, FaEnvelope, FaShoppingBag, FaCreditCard, FaLock } from 'react-icons/fa';
+import { FileInvoiceIcon, CheckCircleIcon, UserIcon, EmailIcon, ShoppingBagIcon, LockIcon } from '../components/Icons';
 import html2pdf from 'html2pdf.js';
 
 export default function Checkout() {
@@ -125,7 +125,7 @@ export default function Checkout() {
           <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
             <div className="card-header bg-success bg-gradient text-white p-4 text-center">
               <h2 className="mb-0 fw-bold d-flex align-items-center justify-content-center gap-3">
-                <FaCheckCircle /> Finalizar Compra
+                <CheckCircleIcon /> Finalizar Compra
               </h2>
             </div>
             
@@ -133,7 +133,7 @@ export default function Checkout() {
               {/* Datos del Cliente */}
               <div className="mb-5">
                 <h4 className="fw-bold text-secondary mb-3 d-flex align-items-center gap-2">
-                  <FaUser className="text-success" /> Datos del Comprador
+                  <UserIcon className="text-success" /> Datos del Comprador
                 </h4>
                 <div className="card bg-light border-0 rounded-3">
                   <div className="card-body">
@@ -141,13 +141,13 @@ export default function Checkout() {
                       <div className="col-12">
                         <label className="text-muted small mb-1">Nombre Completo</label>
                         <div className="d-flex align-items-center gap-2 fs-5 fw-medium">
-                          <FaUser className="text-secondary opacity-50" /> {user.nombre}
+                          <UserIcon className="text-secondary opacity-50" /> {user.nombre}
                         </div>
                       </div>
                       <div className="col-12">
                         <label className="text-muted small mb-1">Correo Electrónico</label>
                         <div className="d-flex align-items-center gap-2 fs-5 fw-medium">
-                          <FaEnvelope className="text-secondary opacity-50" /> {user.email}
+                          <EmailIcon className="text-secondary opacity-50" /> {user.email}
                         </div>
                       </div>
                     </div>
@@ -158,7 +158,7 @@ export default function Checkout() {
               {/* Resumen de Compra */}
               <div className="mb-5">
                 <h4 className="fw-bold text-secondary mb-3 d-flex align-items-center gap-2">
-                  <FaShoppingBag className="text-success" /> Resumen del Pedido
+                  <ShoppingBagIcon className="text-success" /> Resumen del Pedido
                 </h4>
                 
                 {carrito.length === 0 ? (
@@ -207,13 +207,13 @@ export default function Checkout() {
                     </>
                   ) : (
                     <>
-                      <FaFileInvoice /> Confirmar Compra y Generar Factura
+                      <FileInvoiceIcon /> Confirmar Compra y Generar Factura
                     </>
                   )}
                 </button>
                 
                 <div className="text-center text-muted small mt-2 d-flex align-items-center justify-content-center gap-2">
-                  <FaLock /> Sus datos están protegidos. La factura se descargará automáticamente.
+                  <LockIcon /> Sus datos están protegidos. La factura se descargará automáticamente.
                 </div>
               </div>
             </div>

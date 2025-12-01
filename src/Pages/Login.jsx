@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { CiLogin } from "react-icons/ci";
+import { LoginIcon } from '../components/Icons';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true); // Toggle entre login y registro
@@ -168,7 +168,7 @@ export default function Login() {
           {/* Header */}
           <div className="text-center mb-4">
             <div className="mb-3 d-inline-block p-3 rounded-circle" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-              <CiLogin style={{ fontSize: '40px', color: 'white' }} />
+              <LoginIcon style={{ fontSize: '40px', color: 'white' }} />
             </div>
             <h2 className="fw-bold mb-1" style={{ color: '#333' }}>
               {isLogin ? 'Bienvenido' : 'Crear Cuenta'}

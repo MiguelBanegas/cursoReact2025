@@ -1,7 +1,7 @@
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
-import { FaShoppingCart, FaArrowLeft, FaCheckCircle, FaTruck, FaCreditCard, FaLock, FaUndo, FaHeadset } from 'react-icons/fa';
+import { ShoppingCartIcon, ArrowLeftIcon, CheckCircleIcon, TruckIcon, CreditCardIcon, LockIcon, UndoIcon, HeadsetIcon } from '../components/Icons';
 
 const ProductoDetalle = () => {
   const { id, nombre } = useParams();
@@ -24,7 +24,7 @@ const ProductoDetalle = () => {
           <p>No se pudo cargar la información del producto.</p>
           <hr />
           <Link to="/productos" className="btn btn-primary">
-            <FaArrowLeft className="me-2" /> Volver a Productos
+            <ArrowLeftIcon className="me-2" /> Volver a Productos
           </Link>
         </div>
       </div>
@@ -38,7 +38,7 @@ const ProductoDetalle = () => {
         onClick={() => navigate(-1)}
         className="btn btn-outline-secondary mb-4 d-flex align-items-center gap-2 hover-scale"
       >
-        <FaArrowLeft /> Volver
+        <ArrowLeftIcon /> Volver
       </button>
 
       {/* Contenedor principal */}
@@ -81,15 +81,15 @@ onError={(e) => { e.target.src = '/no-image.png'; }}
               {/* Información adicional */}
               <div className="d-flex flex-column gap-3 mb-5">
                 <div className="d-flex align-items-center gap-3 text-secondary">
-                  <FaCheckCircle className="text-success fs-5" />
+                  <CheckCircleIcon className="text-success fs-5" />
                   <span>Stock disponible para entrega inmediata</span>
                 </div>
                 <div className="d-flex align-items-center gap-3 text-secondary">
-                  <FaTruck className="text-primary fs-5" />
+                  <TruckIcon className="text-primary fs-5" />
                   <span>Envío gratis a todo el país</span>
                 </div>
                 <div className="d-flex align-items-center gap-3 text-secondary">
-                  <FaCreditCard className="text-warning fs-5" />
+                  <CreditCardIcon className="text-warning fs-5" />
                   <span>Hasta 12 cuotas sin interés</span>
                 </div>
               </div>
@@ -102,7 +102,7 @@ onError={(e) => { e.target.src = '/no-image.png'; }}
                     className="btn btn-success btn-lg flex-grow-1 d-flex align-items-center justify-content-center gap-2 shadow-sm hover-lift"
                     style={{ background: 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)', border: 'none' }}
                   >
-                    <FaShoppingCart /> Agregar al carrito
+                    <ShoppingCartIcon /> Agregar al carrito
                   </button>
 
                   <Link to="/carrito" className="flex-grow-1 text-decoration-none">
@@ -125,7 +125,7 @@ onError={(e) => { e.target.src = '/no-image.png'; }}
           <div className="card h-100 border-0 shadow-sm hover-lift transition-all">
             <div className="card-body text-center p-4">
               <div className="mb-3 text-primary">
-                <FaLock size={40} />
+                <LockIcon size={40} />
               </div>
               <h5 className="card-title fw-bold">Compra Segura</h5>
               <p className="card-text text-muted small">
@@ -138,7 +138,7 @@ onError={(e) => { e.target.src = '/no-image.png'; }}
           <div className="card h-100 border-0 shadow-sm hover-lift transition-all">
             <div className="card-body text-center p-4">
               <div className="mb-3 text-success">
-                <FaUndo size={40} />
+                <UndoIcon size={40} />
               </div>
               <h5 className="card-title fw-bold">Devolución Garantizada</h5>
               <p className="card-text text-muted small">
@@ -151,7 +151,7 @@ onError={(e) => { e.target.src = '/no-image.png'; }}
           <div className="card h-100 border-0 shadow-sm hover-lift transition-all">
             <div className="card-body text-center p-4">
               <div className="mb-3 text-info">
-                <FaHeadset size={40} />
+                <HeadsetIcon size={40} />
               </div>
               <h5 className="card-title fw-bold">Soporte 24/7</h5>
               <p className="card-text text-muted small">

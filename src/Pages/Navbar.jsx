@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
-import { TiShoppingCart } from "react-icons/ti"
-import { PiMotorcycleFill } from "react-icons/pi"
+import { ShoppingCartIcon, MotorcycleIcon } from '../components/Icons'
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -61,7 +60,7 @@ function Navbar() {
             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            <PiMotorcycleFill className="brand-icon" style={{ marginRight: '8px', fontSize: '32px', color: '#667eea' }} />
+            <MotorcycleIcon className="brand-icon" size={32} color="#667eea" style={{ marginRight: '8px' }} />
             <span className="brand-text-full">MAB Motors</span>
             <span className="brand-text-short">MAB</span>
           </Link>
@@ -86,7 +85,7 @@ function Navbar() {
                     justifyContent: 'center'
                   }}
                 >
-                  <TiShoppingCart style={{ fontSize: '28px', color: isActive('/carrito') ? '#4CAF50' : '#667eea' }} />
+                  <ShoppingCartIcon size={28} color={isActive('/carrito') ? '#4CAF50' : '#667eea'} />
                 </div>
                 {totalItems > 0 && (
                   <span 

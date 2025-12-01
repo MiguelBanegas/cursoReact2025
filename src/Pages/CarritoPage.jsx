@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { FaTrash, FaMinus, FaPlus, FaArrowLeft, FaCreditCard, FaShoppingBag } from 'react-icons/fa';
+import { TrashIcon, MinusIcon, PlusIcon, ArrowLeftIcon, CreditCardIcon, ShoppingBagIcon } from '../components/Icons';
 
 export default function CarritoPage() {
   const { carrito, vaciarCarrito, quitarCantidad, agregarCantidad, eliminarProducto } = useCart();
@@ -15,7 +15,7 @@ export default function CarritoPage() {
     <div className="container py-5">
       <div className="d-flex align-items-center justify-content-between mb-4">
         <h1 className="display-5 fw-bold text-dark mb-0">
-          <FaShoppingBag className="me-3 text-primary" />
+          <ShoppingBagIcon className="me-3 text-primary" />
           Mi Carrito
         </h1>
         {carrito.length > 0 && (
@@ -23,7 +23,7 @@ export default function CarritoPage() {
             onClick={vaciarCarrito}
             className="btn btn-outline-danger d-flex align-items-center gap-2 hover-scale"
           >
-            <FaTrash /> Vaciar Carrito
+            <TrashIcon /> Vaciar Carrito
           </button>
         )}
       </div>
@@ -33,12 +33,12 @@ export default function CarritoPage() {
       {carrito.length === 0 ? (
         <div className="text-center py-5">
           <div className="mb-4 text-muted opacity-25">
-            <FaShoppingBag size={100} />
+            <ShoppingBagIcon size={100} />
           </div>
           <h3 className="text-muted mb-4">Tu carrito está vacío</h3>
           <Link to="/productos">
             <button className="btn btn-primary btn-lg d-inline-flex align-items-center gap-2 shadow-sm hover-lift">
-              <FaArrowLeft /> Ir a Productos
+              <ArrowLeftIcon /> Ir a Productos
             </button>
           </Link>
         </div>
@@ -58,7 +58,7 @@ export default function CarritoPage() {
                              {item.avatar ? (
                                 <img src={item.avatar} alt={item.nombre} className="img-fluid img-hover-zoom" style={{ maxHeight: '100%', transition: 'transform 0.3s ease' }} />
                              ) : (
-                                <FaShoppingBag className="text-secondary fs-2" />
+                                <ShoppingBagIcon className="text-secondary fs-2" />
                              )}
                           </div>
                           <div>
@@ -77,7 +77,7 @@ export default function CarritoPage() {
                             className="btn btn-outline-secondary" 
                             onClick={() => quitarCantidad(item.id)}
                           >
-                            <FaMinus size={12} />
+                            <MinusIcon size={12} />
                           </button>
                           <span className="input-group-text bg-white px-3 fw-bold border-secondary border-opacity-25">
                             {item.cantidad || 1}
@@ -86,7 +86,7 @@ export default function CarritoPage() {
                             className="btn btn-outline-secondary" 
                             onClick={() => agregarCantidad(item.id)}
                           >
-                            <FaPlus size={12} />
+                            <PlusIcon size={12} />
                           </button>
                         </div>
                       </div>
@@ -106,7 +106,7 @@ export default function CarritoPage() {
             <div className="mt-4">
               <Link to="/productos" className="text-decoration-none">
                 <button className="btn btn-link text-secondary d-inline-flex align-items-center gap-2 ps-0">
-                  <FaArrowLeft /> Seguir Comprando
+                  <ArrowLeftIcon /> Seguir Comprando
                 </button>
               </Link>
             </div>
@@ -138,13 +138,13 @@ export default function CarritoPage() {
                   <button className="btn btn-success w-100 py-3 fw-bold shadow-sm hover-lift d-flex align-items-center justify-content-center gap-2"
                     style={{ background: 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)', border: 'none' }}
                   >
-                    <FaCreditCard /> Proceder al Pago
+                    <CreditCardIcon /> Proceder al Pago
                   </button>
                 </Link>
                 
                 <div className="mt-3 text-center">
                   <small className="text-muted d-flex align-items-center justify-content-center gap-1">
-                    <FaCreditCard /> Pago 100% Seguro
+                    <CreditCardIcon /> Pago 100% Seguro
                   </small>
                 </div>
               </div>

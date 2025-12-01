@@ -1,14 +1,23 @@
+
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import SEO from '../components/SEO';
 
 export default function Inicio() {
   const { user } = useAuth();
 
   return (
-    <div style={{ 
-      fontFamily: 'system-ui, -apple-system, sans-serif',
-      color: '#333'
-    }}>
+    <>
+      <SEO 
+        title="Inicio"
+        description="MAB Motors - Venta de motocicletas, repuestos y accesorios. Servicio post-venta de calidad. Tu pasión sobre dos ruedas comienza aquí."
+        keywords="motos nuevas, venta de motocicletas, repuestos para motos, accesorios motos, financiación motos"
+        type="website"
+      />
+      <div style={{ 
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+        color: '#333'
+      }}>
       {/* HERO SECTION */}
       <section style={{
         background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)',
@@ -24,7 +33,7 @@ export default function Inicio() {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundImage: 'url("https://images.unsplash.com/photo-1558981852-426c6c22a060?w=1600")',
+          backgroundImage: 'url("https://images.unsplash.com/photo-1558981852-426c6c22a060?w=1600&auto=format&q=75")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           opacity: 0.3,
@@ -302,5 +311,6 @@ export default function Inicio() {
         </div>
       </section>
     </div>
+    </>
   );
 }

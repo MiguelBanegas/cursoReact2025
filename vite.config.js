@@ -5,4 +5,33 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   publicDir: "public", // Asegura que sw.js se copie al build
+  build: {
+    // Code splitting optimization
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Separate React libraries
+          "react-vendor": ["react", "react-dom", "react-router-dom"],
+          // Bootstrap
+          bootstrap: ["bootstrap"],
+          // React Helmet
+          helmet: ["react-helmet-async"],
+        },
+      },
+    },
+    // Increase chunk size warning limit
+    chunkSizeWarningLimit: 1000,
+    // Enable minification
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.logs in production
+        drop_debugger: true,
+      },
+    },
+  },
+  // Optimize dependencies
+  optimizeDeps: {
+    include: ["react", "react-dom", "react-router-dom"],
+  },
 });

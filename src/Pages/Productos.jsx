@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
+import SEO from "../components/SEO";
 
 export default function Productos() {
   const { agregarAlCarrito } = useCart();
@@ -99,7 +100,14 @@ export default function Productos() {
   if (error) return <p style={{ color: 'red', textAlign: 'center', padding: '20px' }}>{error}</p>;
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '20px auto', padding: '20px' }}>
+    <>
+      <SEO 
+        title="Productos"
+        description="Catálogo completo de motocicletas, repuestos y accesorios. Encuentra la moto perfecta para ti con las mejores marcas del mercado."
+        keywords="catálogo motos, comprar moto, repuestos originales, accesorios motocicletas, cascos, lubricantes"
+        type="website"
+      />
+      <div style={{ maxWidth: '1200px', margin: '20px auto', padding: '20px' }}>
       <h1 ref={productosRef} style={{ marginBottom: '20px', fontSize: '32px', fontWeight: 'bold' }}>🛍️ Nuestros Productos</h1>
       
       {/* Buscador */}
@@ -386,5 +394,6 @@ export default function Productos() {
         </div>
       )}
     </div>
+    </>
   );
 }
