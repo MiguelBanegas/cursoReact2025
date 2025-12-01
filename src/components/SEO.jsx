@@ -64,8 +64,6 @@ return (
     <Meta name="twitter:site" content={seoConfig.social.twitter} />
   )}
 
-  {/* Idioma */}
-  <html lang={seoConfig.language} />
 </>
 
 
