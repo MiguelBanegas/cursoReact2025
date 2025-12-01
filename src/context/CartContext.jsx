@@ -159,24 +159,62 @@ export const CartProvider = ({ children, userEmail }) => {
   };
 
   // Función para finalizar compra (recibe email como parámetro)
-  const finalizarCompra = (userEmail) => {
-    // Simular envío de email
-    console.log(`📧 Enviando compra a: ${userEmail}`);
-    console.log('Productos:', carrito);
-    
-    // Limpiar el carrito del estado
-    setCarrito([]);
-    
-    // TAMBIÉN limpiar de localStorage (compra finalizada)
-    if (userEmail) {
-      const carritoKey = `carrito_${userEmail}`;
-      localStorage.removeItem(carritoKey);
+  const finalizarCompra = async (userEmail) => {
+    try {
+      if (carrito.length === 0) {
+        throw new Error('El carrito está vacío');
+      }
+
+      // Calcular total
+      const total = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+
+      // Preparar datos para el backend
+      const orderData = {
+        userEmail,
+        cartItems: carrito,
+        total
+      };
+
+      console.log('🚀 Iniciando checkout...', orderData);
+
+      // Llamada al backend
+      const response = await fetch('https://api.mabcontrol.ar/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al procesar la compra');
+      }
+      
+      // Si todo salió bien:
+      
+      // 1. Limpiar el carrito del estado
+      setCarrito([]);
+      
+      // 2. Limpiar de localStorage
+      if (userEmail) {
+        const carritoKey = `carrito_${userEmail}`;
+        localStorage.removeItem(carritoKey);
+      }
+      
+      return {
+        success: true,
+        message: '¡Compra realizada con éxito! Se envió la confirmación a tu email.'
+      };
+
+    } catch (error) {
+      console.error('❌ Error en checkout:', error);
+      return {
+        success: false,
+        message: error.message || 'Hubo un problema al procesar tu compra. Intenta nuevamente.'
+      };
     }
-    
-    return {
-      success: true,
-      message: `¡Compra realizada con éxito! Se envió la confirmación a ${userEmail}`
-    };
   };
 
   const value = {

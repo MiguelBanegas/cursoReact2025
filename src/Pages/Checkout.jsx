@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
@@ -88,18 +89,32 @@ export default function Checkout() {
     html2pdf().from(contenido).set(opt).save();
   };
 
-  const handleFinalizarCompra = () => {
-    // Generar factura antes de limpiar el carrito
-    generarFactura();
-    
-    const resultado = finalizarCompra(user.email);
-    
-    if (resultado.success) {
-      showToast('¡Compra exitosa! Tu factura se está descargando...', 'success');
-      // Pequeño delay para asegurar que la descarga inicie antes de navegar
-      setTimeout(() => {
-        navigate('/productos');
-      }, 2000);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleFinalizarCompra = async () => {
+    if (isProcessing) return;
+    setIsProcessing(true);
+
+    try {
+      // Generar factura antes de limpiar el carrito
+      generarFactura();
+      
+      const resultado = await finalizarCompra(user.email);
+      
+      if (resultado.success) {
+        showToast('¡Compra exitosa! Tu factura se está descargando y recibirás un email de confirmación.', 'success');
+        // Pequeño delay para asegurar que la descarga inicie antes de navegar
+        setTimeout(() => {
+          navigate('/productos');
+        }, 2000);
+      } else {
+        showToast(resultado.message, 'error');
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error('Error en checkout:', error);
+      showToast('Ocurrió un error inesperado', 'error');
+      setIsProcessing(false);
     }
   };
 
@@ -181,11 +196,20 @@ export default function Checkout() {
               <div className="d-grid gap-3">
                 <button 
                   onClick={handleFinalizarCompra}
-                  disabled={carrito.length === 0}
+                  disabled={carrito.length === 0 || isProcessing}
                   className="btn btn-success btn-lg py-3 fw-bold shadow-sm hover-lift d-flex align-items-center justify-content-center gap-2"
                   style={{ background: 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)', border: 'none' }}
                 >
-                  <FaFileInvoice /> Confirmar Compra y Generar Factura
+                  {isProcessing ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      Procesando...
+                    </>
+                  ) : (
+                    <>
+                      <FaFileInvoice /> Confirmar Compra y Generar Factura
+                    </>
+                  )}
                 </button>
                 
                 <div className="text-center text-muted small mt-2 d-flex align-items-center justify-content-center gap-2">
