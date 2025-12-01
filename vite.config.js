@@ -14,8 +14,6 @@ export default defineConfig({
           "react-vendor": ["react", "react-dom", "react-router-dom"],
           // Bootstrap
           bootstrap: ["bootstrap"],
-          // React Helmet
-          helmet: ["react-head"],
         },
       },
     },
