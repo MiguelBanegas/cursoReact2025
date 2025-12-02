@@ -7,6 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
 import ScrollToTop from './components/ScrollToTop'
 import UpdateNotifier from './components/UpdateNotifier'
+import AutoLogout from './components/AutoLogout'
 
 
 // Lazy load all page components for code splitting
@@ -61,6 +62,7 @@ function AppContent() {
   return (
     <CartProvider userEmail={user?.email}>
       <UpdateNotifier />
+      <AutoLogout />
       <ScrollToTop />
       <Suspense fallback={<LoadingFallback />}>
         
