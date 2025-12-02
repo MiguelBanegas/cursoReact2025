@@ -1,9 +1,17 @@
 export const appInfo = {
-  version: "v1.0.12",
+  version: "v1.0.13",
   name: "MAB Motors",
   description:
-    "Tu destino premium para repuestos y accesorios de motos. Calidad, confianza y el mejor servicio para tu vehículo.",
+    "Tu destino premium para comprar Motos, Repuestos y accesorios de motos. Calidad, confianza y el mejor servicio para tu vehículo.",
   changelog: [
+    {
+      version: "v1.0.13",
+      date: "02/12/2025",
+      changes: [
+        "Implementación de Info Acerca de. en el menu principal.",
+        "Soporte multi-pestaña para la detección de actividad.",
+      ],
+    },
     {
       version: "v1.0.12",
       date: "02/12/2025",
