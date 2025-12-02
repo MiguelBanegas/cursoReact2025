@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import { ShoppingCartIcon, MotorcycleIcon } from '../components/Icons'
+import AboutModal from '../components/AboutModal'
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -10,6 +11,7 @@ function Navbar() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
 
   // Detectar scroll para cambiar estilo
   useEffect(() => {
@@ -182,6 +184,30 @@ function Navbar() {
                   Servicios
                 </Link>
               </li>
+
+              <li className="nav-item">
+                <button 
+                  className="nav-link border-0 bg-transparent" 
+                  onClick={() => {
+                    setShowAboutModal(true);
+                    setIsOpen(false);
+                  }}
+                  style={{
+                    color: '#333',
+                    fontWeight: '500',
+                    fontSize: '16px',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    transition: 'all 0.3s',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  ℹ️ Info
+                </button>
+              </li>
               
               {/* Admin Link - solo visible para admin */}
               {user?.isAdmin && (
@@ -278,6 +304,11 @@ function Navbar() {
           </div>
         </div>
       </nav>
+      
+      <AboutModal 
+        isOpen={showAboutModal} 
+        onClose={() => setShowAboutModal(false)} 
+      />
 
       <style>{`
         body {
