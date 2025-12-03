@@ -7,10 +7,7 @@ export const appInfo = {
     {
       version: "v1.0.13",
       date: "02/12/2025",
-      changes: [
-        "Implementación de Info Acerca de. en el menu principal.",
-        "Soporte multi-pestaña para la detección de actividad.",
-      ],
+      changes: ["Implementación de Info Acerca de. en el menu principal."],
     },
     {
       version: "v1.0.12",

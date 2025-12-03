@@ -155,7 +155,7 @@ export default function Login() {
         }
       }
     } catch (error) {
-      showToast('Error de conexión. Intenta nuevamente', 'error');
+      showToast('Error de conexión. Intenta nuevamente', error);
     } finally {
       setLoading(false);
     }
@@ -276,6 +276,9 @@ export default function Login() {
 
           {/* Toggle entre Login y Registro */}
           <div className="text-center mt-4 pt-3 border-top">
+            <p className="mb-2 fw-bold">Prueba de cuenta <br /> </p>
+            <p className="fst-italic">1234@admin.com / 123456</p>
+            <br />
             <p className="fst-italic">
               {isLogin ? '¿No tienes una cuenta?' : '¿Ya tienes una cuenta?'}
             </p>
